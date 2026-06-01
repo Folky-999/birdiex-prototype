@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BirdieX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Brand tokens (CLAUDE.md) ─── */
+:root {
+  --bx-green: #3DD68C;
+  --bx-green-dark: #28B870;
+  --bx-btn-gradient: linear-gradient(90deg, #3DD68C 0%, #2EC4C4 100%);
+  --bx-green-light: #E8FAF2;
+  --bx-header-gradient: linear-gradient(160deg, #B8EDD6 0%, #D4F5E9 40%, #EAF8F2 100%);
+  --bx-bg: #FFFFFF;
+  --bx-card: #FFFFFF;
+  --bx-border: #E2EDE8;
+  --bx-text: #1A1A1A;
+  --bx-muted: #7A8A84;
+  --bx-radius-card: 18px;
+  --bx-radius-btn: 12px;
+  --bx-radius-avatar: 50%;
+  --bx-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --bx-transition: 200ms cubic-bezier(0.25, 0, 0, 1);
+  --bx-blue: #3B82F6;
+  --bx-status: var(--bx-status);
+}
+
+/* ─── Selection color ─── */
+::selection { background: rgba(61,214,140,0.25); color: var(--bx-text); }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #E8EDE8;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+
+/* ─── App Frame ─── */
+#app {
+  width: 390px;
+  height: 100vh;
+  background: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Pages ─── */
+.page { display: none; flex-direction: column; flex: 1; min-height: 0; background: #FFFFFF; }
+.page.active { display: flex; }
+
+/* ─── Scroll area ─── */
+.scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 88px;
+  scrollbar-width: none;
+  background: #FFFFFF;
+}
+.scroll-body::-webkit-scrollbar { display: none; }
+
+/* ─── Micro-interaction base — ALL buttons ─── */
+button {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: all var(--bx-transition);
+  -webkit-tap-highlight-color: transparent;
+}
+button:active {
+  transform: scale(0.97);
+  transition: transform 100ms cubic-bezier(0.25, 0, 0, 1);
+}
+button:focus-visible {
+  outline: 2px solid var(--bx-green);
+  outline-offset: 2px;
+}
+
+/* ─── Header ─── */
+.header {
+  background: linear-gradient(180deg, #5ECFAA 0%, #7DDCBC 12%, #9DE8CC 28%, #BCF0DC 45%, #D6F7EE 62%, #EAFAF4 78%, #F5FCFA 90%, #FFFFFF 100%);
+  padding: 0 16px 16px;
+  position: relative;
+  z-index: 100;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ─── Status Bar ─── */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  position: relative;
+  z-index: 1;
+}
+.status-time {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bx-status);
+  letter-spacing: 0.2px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.status-center { flex: 1; }
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.status-icons svg {
+  width: 14px; height: 14px;
+  color: var(--bx-status);
+  flex-shrink: 0;
+}
+
+/* ─── Topbar ─── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--bx-text);
+  text-decoration: none;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 28px; height: 28px; }
+
+.topbar-icons { display: flex; gap: 8px; }
+.icon-btn {
+  width: 36px; height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: none;
+  box-shadow: var(--bx-shadow);
+  transition: all var(--bx-transition);
+}
+.icon-btn:hover {
+  background: #f0faf5;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  transform: translateY(-1px);
+}
+.icon-btn svg { width: 18px; height: 18px; color: var(--bx-text); }
+
+/* ─── Post input bar ─── */
+.post-input-bar {
+  background: #fff;
+  border-radius: var(--bx-radius-card);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  box-shadow: var(--bx-shadow);
+  cursor: text;
+  transition: box-shadow var(--bx-transition);
+  position: relative;
+  z-index: 1;
+}
+.post-input-bar:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.10); }
+.avatar-sm {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.post-placeholder { color: var(--bx-muted); font-size: 14px; flex: 1; opacity: 0.7; }
+
+/* ─── Cards ─── */
+.card {
+  background: var(--bx-card);
+  border-radius: var(--bx-radius-card);
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--bx-border);
+  overflow: hidden;
+  box-shadow: var(--bx-shadow);
+}
+.p16 { padding: 16px; }
+
+/* ─── Banner ─── */
+.banner {
+  height: 192px;
+  position: relative;
+  z-index: 1;
+  border-radius: var(--bx-radius-card);
+  overflow: hidden;
+  margin: 16px 16px 0;
+}
+.banner-slides-wrap {
+  display: flex;
+  width: 300%;
+  height: 100%;
+  transition: transform 500ms cubic-bezier(0.25, 0, 0, 1);
+}
+.banner-slide {
+  width: 33.333%;
+  height: 100%;
+  flex-shrink: 0;
+  position: relative;
+}
+.banner-slide img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+}
+/* banner overlay removed — images are shown clean */
+/* Dots — absolute on the banner card, not inside overlay */
+.banner-dots {
+  position: absolute;
+  bottom: 14px; left: 0; right: 0;
+  display: flex; justify-content: center; gap: 6px;
+  pointer-events: auto;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  border: none; padding: 0;
+  transition: all 300ms cubic-bezier(0.25,0,0,1);
+}
+.dot.active {
+  background: var(--bx-green);
+  width: 18px;
+  border-radius: 3px;
+}
+
+/* ─── CTA card ─── */
+.cta-card { margin: 16px 16px 0; }
+.cta-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.cta-title { font-weight: 800; font-size: 16px; color: var(--bx-text); }
+.cta-time { font-size: 12px; color: var(--bx-muted); margin-top: 2px; }
+.cta-desc { font-size: 14px; color: var(--bx-muted); line-height: 1.6; margin-bottom: 16px; }
+.btn-green {
+  display: inline-flex; align-items: center; gap: 4px;
+  width: fit-content;
+  background: var(--bx-btn-gradient);
+  color: #fff; font-weight: 700; font-size: 14px;
+  border: none; border-radius: var(--bx-radius-btn);
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(61,214,140,0.35);
+  transition: all var(--bx-transition);
+}
+.btn-green:hover {
+  box-shadow: 0 6px 20px rgba(61,214,140,0.50);
+  transform: translateY(-1px);
+}
+
+/* ─── Section label ─── */
+.section-label {
+  padding: 16px 16px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--bx-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ─── Post card ─── */
+.post-card { margin: 0 16px 16px; }
+.post-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+}
+.avatar-md {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ecdc4, #3dd68c);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 15px;
+  flex-shrink: 0;
+}
+.post-meta { flex: 1; line-height: 1; }
+.post-name { font-weight: 700; font-size: 14px; color: var(--bx-text); display: inline; }
+.follow-btn {
+  background: none; border: none;
+  color: var(--bx-green); font-weight: 700; font-size: 14px;
+  margin-left: 8px;
+  transition: color var(--bx-transition);
+  display: inline;
+}
+.follow-btn:hover { color: var(--bx-green-dark); }
+
+.three-dot {
+  width: 32px; height: 32px;
+  background: none; border: none;
+  color: var(--bx-muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  transition: all var(--bx-transition);
+}
+.three-dot:hover { background: var(--bx-bg); color: var(--bx-text); }
+.three-dot svg { width: 18px; height: 18px; }
+
+/* ─── Score image ─── */
+.score-image-wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+.score-image-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.score-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.80) 100%);
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 16px 16px;
+}
+.score-label {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.score-number {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 12px;
+}
+.score-big { font-size: 44px; font-weight: 800; color: #fff; line-height: 1; }
+.score-diff { font-size: 16px; color: rgba(255,255,255,0.60); font-weight: 600; }
+
+/* Score stats as columns matching reference */
+.score-stats {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+  border-left: 1px solid rgba(255,255,255,0.2);
+}
+.stat-col {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 14px 0 12px;
+  border-right: 1px solid rgba(255,255,255,0.2);
+}
+.stat-col-num { font-size: 18px; font-weight: 800; color: #fff; line-height: 1.2; }
+.stat-col-lbl { font-size: 10px; color: rgba(255,255,255,0.65); font-weight: 600; letter-spacing: 0.5px; margin-top: 2px; }
+
+.overlay-info { display: flex; flex-direction: column; gap: 6px; }
+.overlay-row { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,0.90); font-weight: 500; }
+.overlay-row svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.85; }
+
+
+/* ─── Post footer ─── */
+.post-footer {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 16px;
+}
+.post-time { font-size: 13px; color: var(--bx-muted); flex: 1; }
+.reaction-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none;
+  color: var(--bx-muted); font-size: 14px; font-weight: 600;
+  border-radius: 8px;
+  padding: 4px 8px;
+  transition: all var(--bx-transition);
+}
+.reaction-btn:hover { color: var(--bx-green); background: var(--bx-green-light); }
+.reaction-btn svg { width: 18px; height: 18px; }
+
+
+/* ─── Golf course background — Feed & Match only ─── */
+#bg-illustration {
+  position: fixed;
+  bottom: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 390px;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  object-fit: cover;
+  object-position: bottom;
+  display: block;
+  transition: opacity 200ms cubic-bezier(0.25, 0, 0, 1);
+}
+#app.profile-active #bg-illustration,
+#app.play-active #bg-illustration { opacity: 0; pointer-events: none; }
+
+/* ─── Play nav label ─── */
+.nav-center-x .play-label { display: none; }
+.nav-center-x.play-active .play-label {
+  display: block;
+  font-size: 10px; font-weight: 600;
+  background: linear-gradient(90deg, #3DD68C, #2EC4C4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-top: 2px;
+}
+
+/* ─── Play Page ─── */
+#page-play {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(180deg,
+    #B8EEE4 0%,
+    #CBF3E8 15%,
+    #DCF8F0 30%,
+    #EAF9F4 48%,
+    #F4FCFA 62%,
+    #FAFEFE 75%,
+    #FFFFFF 88%
+  );
+  overflow: hidden;
+  padding-bottom: 68px;
+  position: relative;
+}
+#page-play.active { display: flex; }
+#page-play::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 32%;
+  background: url('./x-water-mark.jpg') center top / 100% auto no-repeat;
+  transform: scaleX(-1);
+  opacity: 0.35;
+  z-index: 0;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0) 100%);
+}
+
+.play-header {
+  padding: 0 16px 20px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+.play-page-title { font-size: 22px; font-weight: 600; color: var(--bx-text); padding-top: 8px; }
+
+.play-illustration-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 16px;
+  overflow: hidden;
+}
+.play-illustration-wrap img {
+  width: 100%;
+  object-fit: contain;
+  display: block;
+  margin-bottom: -24px;
+  -webkit-mask-image: linear-gradient(180deg, black 0%, black 75%, transparent 100%);
+  mask-image: linear-gradient(180deg, black 0%, black 75%, transparent 100%);
+}
+
+.play-cta-wrap {
+  padding: 24px 24px 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.play-cta-title { font-size: 18px; font-weight: 700; color: var(--bx-text); }
+.play-cta-sub { font-size: 14px; color: #7A8A84; margin-top: 8px; line-height: 1.6; }
+.play-cta-btn {
+  margin-top: 20px;
+  background: linear-gradient(90deg, #3DD68C 0%, #2EC4C4 100%);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 40px 12px 52px;
+  font-size: 15px; font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(61,214,140,0.35);
+  transition: all 200ms cubic-bezier(0.25, 0, 0, 1);
+  min-width: 160px;
+}
+.play-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(61,214,140,0.50); }
+.play-cta-btn:active { transform: scale(0.97); }
+.play-cta-plus {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  position: absolute;
+  left: 8px;
+}
+
+/* ─── Bottom Nav ─── */
+#bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 390px;
+  background: #fff;
+  border-top: 1px solid var(--bx-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 8px 24px;
+  z-index: 99;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px;
+  background: none; border: none;
+  padding: 6px 16px;
+  border-radius: 16px;
+  transition: background var(--bx-transition);
+}
+.nav-item svg { width: 22px; height: 22px; color: var(--bx-muted); transition: color var(--bx-transition); }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--bx-muted); transition: color var(--bx-transition); }
+.nav-item.active { background: rgba(61,214,140,0.10); }
+.nav-item.active svg { color: var(--bx-green); }
+.nav-item.active .nav-label { color: var(--bx-green); }
+.nav-item:hover:not(.active) { background: var(--bx-bg); }
+
+/* ─── Disabled nav item (Friends) ─── */
+.nav-item.nav-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.nav-item.nav-disabled:hover { background: none; }
+.nav-item.nav-disabled:active { transform: none; }
+.nav-item.nav-disabled { position: relative; }
+.nav-item.nav-disabled::after {
+  content: 'Coming soon';
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--bx-text);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms cubic-bezier(0.25,0,0,1),
+              transform 150ms cubic-bezier(0.25,0,0,1);
+}
+.nav-item.nav-disabled:active::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  animation: tooltip-fade 1.5s cubic-bezier(0.25,0,0,1) forwards;
+}
+@keyframes tooltip-fade {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  60%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+}
+
+.nav-center-x {
+  width: 48px; height: 48px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(61,214,140,0.35);
+  border: none;
+  margin-bottom: 8px;
+  transition: all var(--bx-transition);
+}
+.nav-center-x.play-active::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 17px;
+  padding: 2px;
+  background: linear-gradient(90deg, #3DD68C, #2EC4C4);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+.nav-center-x:hover {
+  box-shadow: 0 6px 20px rgba(61,214,140,0.60);
+  transform: translateY(-2px);
+}
+/* nav-center-x icon is now an <img> — no SVG rule needed */
+
+/* ─── Match Page ─── */
+.match-header {
+  background: linear-gradient(180deg, #5ECFAA 0%, #7DDCBC 12%, #9DE8CC 28%, #BCF0DC 45%, #D6F7EE 62%, #EAFAF4 78%, #F5FCFA 90%, #FFFFFF 100%);
+  padding: 0 16px 0;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.match-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./x-water-mark.jpg');
+  background-size: cover;
+  background-position: right center;
+  transform: scaleX(-1);
+  z-index: 0;
+  opacity: 0.55;
+}
+.match-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(94,207,170,0.15) 0%,
+    rgba(255,255,255,0) 40%,
+    rgba(255,255,255,0.7) 75%,
+    rgba(255,255,255,1) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+.match-header .match-title,
+.match-header .tab-bar { position: relative; z-index: 3; }
+.match-title { font-size: 22px; font-weight: 600; color: var(--bx-text); margin-bottom: 4px; padding-top: 8px; margin-top: 0; }
+.tab-bar { display: flex; padding: 4px; gap: 0; border-bottom: none; margin-top: 0; }
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 6px 20px;
+  font-size: 15px; font-weight: 400;
+  color: #7A8A84; cursor: pointer;
+  border-radius: 20px;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: background 200ms cubic-bezier(0.25, 0, 0, 1), color 200ms cubic-bezier(0.25, 0, 0, 1);
+}
+.tab.active {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  color: #3DD68C;
+  font-weight: 600;
+  border-bottom-color: #3DD68C;
+}
+.tab:hover:not(.active) { color: var(--bx-text); }
+
+.search-bar {
+  margin: 12px 16px 16px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--bx-border);
+  display: flex; align-items: center;
+  padding: 12px 16px; gap: 8px;
+  box-shadow: var(--bx-shadow);
+  transition: box-shadow var(--bx-transition);
+}
+.search-bar:focus-within { box-shadow: 0 0 0 2px rgba(61,214,140,0.3); }
+.search-bar svg { width: 18px; height: 18px; color: var(--bx-muted); flex-shrink: 0; }
+.search-input {
+  flex: 1; border: none; outline: none;
+  font-family: inherit; font-size: 14px;
+  color: var(--bx-text); background: transparent;
+}
+.search-input::placeholder { color: var(--bx-muted); opacity: 0.6; }
+
+/* ─── Match card ─── */
+.match-card { margin: 0 16px 16px; cursor: pointer; }
+.match-card:hover .match-cover img { transform: scale(1.02); }
+.match-cover {
+  height: 144px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px 14px 0 0;
+}
+.match-cover img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 300ms cubic-bezier(0.25,0,0,1);
+}
+.match-cover-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.70) 0%, transparent 100%);
+  padding: 12px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.avatar-xs {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.85);
+  background: linear-gradient(135deg, #4ecdc4, var(--bx-green));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.host-name { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+.host-icons { display: flex; gap: 4px; }
+.host-icons svg { width: 14px; height: 14px; color: rgba(255,255,255,0.8); }
+.booking-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: var(--bx-blue); color: #fff;
+  font-size: 10px; font-weight: 800;
+  border-radius: 8px; padding: 4px 8px;
+  letter-spacing: 0.8px;
+}
+.match-body {
+  background: #fff; padding: 16px 16px;
+  border-radius: 0 0 14px 14px;
+  border: 1px solid var(--bx-border); border-top: none;
+}
+.match-name { font-size: 15px; font-weight: 700; color: var(--bx-text); margin-bottom: 10px; line-height: 1.3; }
+.match-info { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.info-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--bx-muted); }
+.info-row svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--bx-green); }
+.player-bar { display: flex; align-items: center; gap: 8px; }
+.avatar-stack { display: flex; }
+.avatar-stack .avatar-xs { margin-right: -8px; border-color: #fff; }
+.avatar-stack .avatar-xs:last-child { margin-right: 0; }
+.joined-badge {
+  background: var(--bx-green-light);
+  color: var(--bx-green-dark);
+  font-size: 12px; font-weight: 700;
+  border-radius: 20px; padding: 4px 12px;
+  margin-left: 12px;
+}
+
+/* ─── FAB ─── */
+.fab {
+  position: fixed;
+  bottom: 96px;
+  left: calc(50% + 390px/2 - 64px);
+  width: 48px; height: 48px;
+  background: var(--bx-btn-gradient);
+  border-radius: 50%;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(61,214,140,0.50);
+  z-index: 99;
+  transition: all var(--bx-transition);
+}
+.fab:hover {
+  box-shadow: 0 6px 24px rgba(61,214,140,0.65);
+  transform: translateY(-2px) scale(1.04);
+}
+.fab svg { width: 22px; height: 22px; color: #fff; }
+
+/* ─── Profile Page ─── */
+.profile-header {
+  background: linear-gradient(180deg, #5ECFAA 0%, #7DDCBC 12%, #9DE8CC 28%, #BCF0DC 45%, #D6F7EE 62%, #EAFAF4 78%, #F5FCFA 90%, #FFFFFF 100%);
+  padding: 0 16px 16px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.profile-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./x-water-mark.jpg');
+  background-size: cover;
+  background-position: right center;
+  transform: scaleX(-1);
+  z-index: 0;
+  opacity: 0.55;
+}
+.profile-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.7) 75%,
+    rgba(255,255,255,1) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+.profile-header .status-bar { position: relative; z-index: 2; }
+.profile-topbar { position: relative; z-index: 2; }
+.profile-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; padding-bottom: 16px; }
+.profile-username { font-size: 22px; font-weight: 600; color: var(--bx-text); }
+.profile-top-icons { display: flex; gap: 8px; }
+
+/* Profile scrollable info section (avatar + followers + metrics) */
+.profile-scroll-header {
+  background: linear-gradient(180deg, #EDF9F4 0%, #F5FCFA 40%, #FFFFFF 100%);
+  padding: 16px 16px 16px;
+  position: relative;
+}
+.profile-scroll-header .profile-main,
+.profile-scroll-header .stats-row,
+.profile-scroll-header .metrics-row { position: relative; z-index: 1; }
+
+.profile-main {
+  display: flex; flex-direction: column; align-items: center;
+  margin-bottom: 16px;
+}
+.avatar-lg-wrap { position: relative; margin-bottom: 8px; }
+.avatar-lg {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: none;
+  display: block;
+}
+.gender-badge {
+  position: absolute; top: 0; right: -4px;
+  width: 22px; height: 22px;
+  background: #fff; border-radius: 50%;
+  border: 1.5px solid var(--bx-border);
+  display: flex; align-items: center; justify-content: center;
+}
+.gender-badge svg { width: 12px; height: 12px; color: var(--bx-blue); }
+.edit-label { font-size: 11px; font-weight: 800; color: var(--bx-muted); letter-spacing: 0.8px; }
+
+.stats-row {
+  display: flex;
+  border: 1px solid var(--bx-border);
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  width: 100%;
+  box-shadow: var(--bx-shadow);
+}
+.stat-cell {
+  flex: 1; text-align: center;
+  padding: 12px 0;
+  border-right: 1px solid var(--bx-border);
+  cursor: pointer;
+  transition: background var(--bx-transition);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-cell:hover { background: var(--bx-bg); }
+.stat-num { font-size: 16px; font-weight: 800; color: var(--bx-text); }
+.stat-lbl { font-size: 11px; color: var(--bx-muted); margin-top: 2px; }
+
+.metrics-row {
+  display: flex;
+  background: var(--bx-header-gradient);
+  border-radius: 14px;
+  border: 1px solid var(--bx-border);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.metric-cell {
+  flex: 1; text-align: center;
+  padding: 12px 0;
+  border-right: 1px solid var(--bx-border);
+}
+.metric-cell:last-child { border-right: none; }
+.metric-val { font-size: 15px; font-weight: 800; color: var(--bx-text); }
+.metric-lbl { font-size: 10px; color: var(--bx-muted); margin-top: 2px; }
+
+/* ─── Profile tabs ─── */
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--bx-border);
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.profile-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 14px 0; cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all var(--bx-transition);
+}
+.profile-tab svg { width: 20px; height: 20px; color: var(--bx-muted); transition: color var(--bx-transition); }
+.profile-tab.active { border-bottom-color: var(--bx-green); }
+.profile-tab.active svg { color: var(--bx-green); }
+.profile-tab:hover:not(.active) svg { color: var(--bx-text); }
+
+/* ─── Stats content ─── */
+.stats-section { padding: 16px; }
+.stats-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.stats-section-title { font-size: 15px; font-weight: 700; color: var(--bx-text); }
+.dropdown-btn {
+  background: var(--bx-bg); border: 1px solid var(--bx-border);
+  border-radius: 8px; padding: 6px 12px;
+  font-size: 12px; font-weight: 700; color: var(--bx-muted);
+  font-family: inherit;
+  transition: all var(--bx-transition);
+}
+.dropdown-btn:hover { background: #fff; border-color: var(--bx-green); color: var(--bx-green); }
+
+.two-col { display: flex; gap: 12px; margin-bottom: 12px; }
+.stat-big-card {
+  flex: 1; background: var(--bx-green-light);
+  border-radius: 14px; padding: 16px;
+  position: relative; overflow: hidden;
+  border: 1px solid rgba(200,235,220,0.6);
+  transition: transform var(--bx-transition);
+}
+/* AVG. SCORE card — banner bg normal */
+.avg-score-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url('./banner.jpg') center / 115% 115% no-repeat;
+  border-radius: inherit;
+  z-index: 0;
+}
+/* HANDICAP card — banner bg flipped horizontally */
+.handicap-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url('./banner.jpg') center / 115% 115% no-repeat;
+  transform: scaleX(-1);
+  border-radius: inherit;
+  z-index: 0;
+}
+/* All content inside banner cards sits above the bg */
+.avg-score-card > *, .handicap-card > * {
+  position: relative; z-index: 1;
+}
+.stat-big-card:hover { transform: translateY(-2px); }
+.stat-big-lbl { font-size: 10px; font-weight: 800; color: var(--bx-green-dark); letter-spacing: 0.8px; }
+.stat-big-val { font-size: 22px; font-weight: 800; color: var(--bx-text); margin-top: 4px; }
+.stat-watermark-svg {
+  position: absolute; right: 8px; bottom: 4px;
+  width: 48px; height: 48px; opacity: 0.08;
+}
+
+.stats-point-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.toggle-row { display: flex; background: var(--bx-border); border-radius: 8px; padding: 2px; }
+.toggle-btn {
+  padding: 4px 12px;
+  font-size: 12px; font-weight: 700;
+  border: none;
+  background: transparent; color: var(--bx-muted);
+  border-radius: 6px;
+  transition: all var(--bx-transition);
+}
+.toggle-btn.active { background: #fff; color: var(--bx-green); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+.donut-section { display: flex; gap: 16px; align-items: center; margin-bottom: 16px; }
+.donut-wrap { flex-shrink: 0; }
+.donut-svg { width: 130px; height: 130px; }
+.legend { flex: 1; display: flex; flex-direction: column; gap: 7px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--bx-text); font-weight: 600; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.legend-val { margin-left: auto; font-weight: 700; color: var(--bx-muted); font-size: 12px; }
+
+.other-stat { margin-top: 4px; }
+.other-stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bx-border);
+  font-size: 14px; color: var(--bx-text);
+}
+.other-stat-row:last-child { border-bottom: none; }
+.other-stat-val { font-weight: 700; color: var(--bx-muted); }
+
+/* ─── Feed stagger animation ─── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.feed-item {
+  animation: fadeSlideUp 280ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  position: relative;
+  z-index: 1;
+}
+.feed-item:nth-child(1) { animation-delay: 0ms; }
+.feed-item:nth-child(2) { animation-delay: 50ms; }
+.feed-item:nth-child(3) { animation-delay: 100ms; }
+.feed-item:nth-child(4) { animation-delay: 150ms; }
+.feed-item:nth-child(5) { animation-delay: 200ms; }
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════════
+       PAGE 1: FEED
+  ══════════════════════════════════════════ -->
+  <div class="page active" id="page-feed">
+    <div class="header">
+      <div class="status-bar">
+        <span class="status-time" id="status-time">9:41</span>
+        <div class="status-center"></div>
+        <div class="status-icons">
+          <!-- Signal bars -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="16" width="3" height="7" rx="1"/><rect x="6.5" y="11" width="3" height="12" rx="1"/><rect x="12" y="6" width="3" height="17" rx="1"/><rect x="17.5" y="1" width="3" height="22" rx="1" opacity="0.3"/></svg>
+          <!-- WiFi -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></svg>
+          <!-- Battery ~80% -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 10.5v3a1.5 1.5 0 0 0 0-3z"/><rect x="2.5" y="8.5" width="13" height="8" rx="1"/></svg>
+        </div>
+      </div>
+      <div class="topbar">
+        <div class="logo" style="height:36px;overflow:hidden;display:flex;align-items:center;margin-left:-16px;">
+          <img src="./Logo.png" alt="BirdieX" style="height:90px;width:auto;object-fit:contain;display:block;image-rendering:crisp-edges;margin-top:-27px;margin-bottom:-27px;">
+        </div>
+        <div class="topbar-icons">
+          <button class="icon-btn" aria-label="Help">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Messages">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="post-input-bar">
+        <img src="./Avatar.png" alt="Avatar" class="avatar-sm" style="object-fit:cover;">
+        <span class="post-placeholder">Post something...</span>
+      </div>
+    </div>
+
+    <div class="scroll-body">
+      <!-- Banner — 3-slide auto carousel -->
+      <div class="banner feed-item" id="banner">
+        <div class="banner-slides-wrap" id="bannerTrack">
+          <!-- Slide 1 -->
+          <div class="banner-slide">
+            <img src="./1.png" alt="Golf banner 1">
+          </div>
+          <!-- Slide 2 -->
+          <div class="banner-slide">
+            <img src="./2.png" alt="Golf banner 2">
+          </div>
+          <!-- Slide 3 -->
+          <div class="banner-slide">
+            <img src="./3.png" alt="Golf banner 3">
+          </div>
+        </div>
+        <!-- Dots outside slides so they sit on top of the track -->
+        <div class="banner-dots">
+          <button class="dot active" data-slide="0" aria-label="Slide 1"></button>
+          <button class="dot" data-slide="1" aria-label="Slide 2"></button>
+          <button class="dot" data-slide="2" aria-label="Slide 3"></button>
+        </div>
+      </div>
+
+      <!-- CTA card -->
+      <div class="card cta-card p16 feed-item">
+        <div class="cta-header">
+          <span class="cta-title">Welcome to BirdieX!</span>
+          <span class="cta-time">just now</span>
+        </div>
+        <p class="cta-desc">Your swing deserves the spotlight. Let's create your first match!</p>
+        <button class="btn-green">Create New Match ›</button>
+      </div>
+
+      <!-- Section label -->
+      <div class="section-label feed-item">Recent Activity</div>
+
+      <!-- Post card 1 — Tae Norapat -->
+      <div class="card post-card feed-item">
+        <div class="post-header">
+          <div class="avatar-md" style="background:none;overflow:hidden;padding:0;">
+            <img src="./Avatar.png" alt="Stephen Curry" style="width:64px;height:64px;object-fit:cover;object-position:center 10%;margin:-12px;display:block;">
+          </div>
+          <div class="post-meta">
+            <span class="post-name">Stephen Curry</span>
+            <button class="follow-btn">Follow</button>
+          </div>
+          <button class="three-dot" aria-label="More options">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+        </div>
+
+        <div class="score-image-wrap">
+          <img src="https://d23jngptvnttd7.cloudfront.net/2025/10/10110323/Curry-5-scaled.jpg" alt="Golf player photo" style="object-fit:cover;object-position:center 20%;">
+          <div class="score-overlay">
+            <div class="score-label">SCORE</div>
+            <div class="score-number">
+              <span class="score-big">102</span>
+              <span class="score-diff">(+30)</span>
+            </div>
+            <div class="score-stats">
+              <div class="stat-col">
+                <div class="stat-col-num">1</div>
+                <div class="stat-col-lbl">PAR</div>
+              </div>
+              <div class="stat-col">
+                <div class="stat-col-num">6</div>
+                <div class="stat-col-lbl">BOGEY</div>
+              </div>
+              <div class="stat-col">
+                <div class="stat-col-num">9</div>
+                <div class="stat-col-lbl">DOUBLE</div>
+              </div>
+            </div>
+            <div class="overlay-info">
+              <div class="overlay-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Toscana Valley Country Club
+              </div>
+              <div class="overlay-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                30 May 2026
+                &nbsp;
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+                12:00
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-footer">
+          <span class="post-time">23 hrs ago</span>
+          <button class="reaction-btn" aria-label="Like">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            4
+          </button>
+          <button class="reaction-btn" aria-label="Comment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Post card 2 — Lebron James -->
+      <div class="card post-card feed-item">
+        <div class="post-header">
+          <div class="avatar-md" style="background:none;overflow:hidden;padding:0;">
+            <img src="./Avatar.png" alt="Lebron James" style="width:64px;height:64px;object-fit:cover;object-position:center 10%;margin:-12px;display:block;">
+          </div>
+          <div class="post-meta">
+            <span class="post-name">Lebron James</span>
+            <button class="follow-btn">Follow</button>
+          </div>
+          <button class="three-dot" aria-label="More options">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+        </div>
+        <div class="score-image-wrap">
+          <img src="https://theonion.com/wp-content/uploads/2026/01/Lebron_James_PLaying_Golf_SB-IHA-GR.jpg?resize=1024,776" alt="Golf player photo" style="object-fit:cover;object-position:center 25%;">
+          <div class="score-overlay">
+            <div class="score-label">SCORE</div>
+            <div class="score-number">
+              <span class="score-big">88</span>
+              <span class="score-diff">(+16)</span>
+            </div>
+            <div class="score-stats">
+              <div class="stat-col">
+                <div class="stat-col-num">3</div>
+                <div class="stat-col-lbl">PAR</div>
+              </div>
+              <div class="stat-col">
+                <div class="stat-col-num">8</div>
+                <div class="stat-col-lbl">BOGEY</div>
+              </div>
+              <div class="stat-col">
+                <div class="stat-col-num">5</div>
+                <div class="stat-col-lbl">DOUBLE</div>
+              </div>
+            </div>
+            <div class="overlay-info">
+              <div class="overlay-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Summit Golf Club, Chiang Mai
+              </div>
+              <div class="overlay-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                28 May 2026 &nbsp;
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/></svg>
+                08:30
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="post-footer">
+          <span class="post-time">2 days ago</span>
+          <button class="reaction-btn" aria-label="Like">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            11
+          </button>
+          <button class="reaction-btn" aria-label="Comment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            3
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /page-feed -->
+
+
+  <!-- ══════════════════════════════════════════
+       PAGE 2: MATCH
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-match">
+    <div class="match-header">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-center"></div>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="16" width="3" height="7" rx="1"/><rect x="6.5" y="11" width="3" height="12" rx="1"/><rect x="12" y="6" width="3" height="17" rx="1"/><rect x="17.5" y="1" width="3" height="22" rx="1" opacity="0.3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 10.5v3a1.5 1.5 0 0 0 0-3z"/><rect x="2.5" y="8.5" width="13" height="8" rx="1"/></svg>
+        </div>
+      </div>
+      <div class="match-title">Match</div>
+      <div class="tab-bar">
+        <div class="tab active" id="tab-opening" onclick="setMatchTab('opening')">Opening</div>
+        <div class="tab" id="tab-live" onclick="setMatchTab('live')">Live</div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" placeholder="Search by name">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18" style="color:var(--bx-muted)"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+    </div>
+    <div class="scroll-body">
+
+      <!-- Match card 1 -->
+      <div class="card match-card feed-item">
+        <div class="match-cover">
+          <img src="https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&q=80" alt="Golf course">
+          <div class="booking-badge">BOOKING</div>
+          <div class="match-cover-overlay">
+            <div class="avatar-xs">K</div>
+            <span class="host-name">Krit P.</span>
+            <div class="host-icons">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l1-5 4 2 4-6 4 4 4-2 1 7H3z"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="match-body">
+          <div class="match-name">Morning Round at Toscana Valley</div>
+          <div class="match-info">
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Toscana Valley Country Club</div>
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sat 7 Jun 2026 &nbsp;·&nbsp; 07:00 AM</div>
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>฿1,800 – ฿2,500</div>
+            <div class="info-row" style="color:var(--bx-text);font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Avg. Score &nbsp;<span style="color:var(--bx-muted);font-weight:400">85–100</span></div>
+          </div>
+          <div class="player-bar">
+            <div class="avatar-stack">
+              <div class="avatar-xs">K</div>
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#f093fb,#f5576c)">A</div>
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">S</div>
+            </div>
+            <div class="joined-badge">Joined 3 / 4 Players</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match card 2 -->
+      <div class="card match-card feed-item">
+        <div class="match-cover">
+          <img src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=800&q=80" alt="Golf course">
+          <div class="match-cover-overlay">
+            <div class="avatar-xs" style="background:linear-gradient(135deg,#667eea,#764ba2)">M</div>
+            <span class="host-name">Manop W.</span>
+            <div class="host-icons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          </div>
+        </div>
+        <div class="match-body">
+          <div class="match-name">Weekend Warriors — Hua Hin</div>
+          <div class="match-info">
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Black Mountain Golf Club, Hua Hin</div>
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sun 8 Jun 2026 &nbsp;·&nbsp; 06:30 AM</div>
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>฿2,200 – ฿3,000</div>
+            <div class="info-row" style="color:var(--bx-text);font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Avg. Score &nbsp;<span style="color:var(--bx-muted);font-weight:400">75–90</span></div>
+          </div>
+          <div class="player-bar">
+            <div class="avatar-stack">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#667eea,#764ba2)">M</div>
+              <div class="avatar-xs">T</div>
+            </div>
+            <div class="joined-badge">Joined 2 / 4 Players</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match card 3 -->
+      <div class="card match-card feed-item">
+        <div class="match-cover">
+          <img src="https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=800&q=80" alt="Golf course">
+          <div class="booking-badge">BOOKING</div>
+          <div class="match-cover-overlay">
+            <div class="avatar-xs" style="background:linear-gradient(135deg,#f7971e,#ffd200)">S</div>
+            <span class="host-name">Siriporn L.</span>
+            <div class="host-icons">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l1-5 4 2 4-6 4 4 4-2 1 7H3z"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="match-body">
+          <div class="match-name">Ladies' Day — Summit Golf Club</div>
+          <div class="match-info">
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Summit Golf Club, Chiang Mai</div>
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sat 14 Jun 2026 &nbsp;·&nbsp; 08:00 AM</div>
+            <div class="info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>฿1,500 – ฿2,000</div>
+            <div class="info-row" style="color:var(--bx-text);font-weight:600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Avg. Score &nbsp;<span style="color:var(--bx-muted);font-weight:400">90–110</span></div>
+          </div>
+          <div class="player-bar">
+            <div class="avatar-stack">
+              <div class="avatar-xs" style="background:linear-gradient(135deg,#f7971e,#ffd200)">S</div>
+            </div>
+            <div class="joined-badge">Joined 1 / 4 Players</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="fab" aria-label="Create match">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div><!-- /page-match -->
+
+
+  <!-- ══════════════════════════════════════════
+       PAGE 3: PROFILE
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-profile">
+    <div class="profile-header">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-center"></div>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="16" width="3" height="7" rx="1"/><rect x="6.5" y="11" width="3" height="12" rx="1"/><rect x="12" y="6" width="3" height="17" rx="1"/><rect x="17.5" y="1" width="3" height="22" rx="1" opacity="0.3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 10.5v3a1.5 1.5 0 0 0 0-3z"/><rect x="2.5" y="8.5" width="13" height="8" rx="1"/></svg>
+        </div>
+      </div>
+      <div class="profile-topbar">
+        <span class="profile-username">Folk</span>
+        <div class="profile-top-icons">
+          <button class="icon-btn" aria-label="History">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Share">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div><!-- /profile-header: only status-bar + topbar are sticky -->
+
+    <div class="scroll-body">
+      <!-- Avatar + followers + metrics scroll away -->
+      <div class="profile-scroll-header">
+        <div class="profile-main">
+          <div class="avatar-lg-wrap">
+            <img src="./Avatar.png" alt="Profile avatar" class="avatar-lg" style="width:160px;height:160px;margin:-30px -30px -10px -30px;object-fit:cover;object-position:center 25%;">
+            <div class="gender-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="19 5 14 5 19 10"/></svg>
+            </div>
+          </div>
+          <span class="edit-label">EDIT</span>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-cell">
+            <div class="stat-num">0</div>
+            <div class="stat-lbl">Followers</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">0</div>
+            <div class="stat-lbl">Followings</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="stat-lbl">Contact</div>
+          </div>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-cell">
+            <div class="metric-val">100</div>
+            <div class="metric-lbl">Avg. Score</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-val">—</div>
+            <div class="metric-lbl">Total Match</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-val">25</div>
+            <div class="metric-lbl">Handicap</div>
+          </div>
+        </div>
+      </div><!-- /profile-scroll-header -->
+
+      <!-- Tab bar: sticky inside scroll-body (top: 0 = below the fixed profile-header) -->
+      <div class="profile-tabs" id="profileTabs">
+        <div class="profile-tab" onclick="setProfileTab(0,this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="profile-tab" onclick="setProfileTab(1,this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div class="profile-tab" onclick="setProfileTab(2,this)">
+          <svg viewBox="0 0 1200 1200" fill="currentColor" stroke="none">
+            <path d="m472.69 202c-49.418 0-89.293 39.457-89.293 87.996 0 48.707 39.875 88.082 89.293 88.082 49.117 0 89.027-39.383 89.027-88.082-0.011719-48.539-39.91-87.996-89.027-87.996z"/>
+            <path d="m925.11 376.1c-3.3477-19.008-18.914-29.797-19.859-30.492l-524.19-345.61-48.699 70.547c-9.0703 13.906-5.1133 32.398 8.7969 41.449 13.836 9.1562 32.293 5.4375 41.363-8.4609l28.5-40.766 425.75 280.92-348.81 62.785c-24.695 4.1523-42.578 28.848-37.07 53.027l75.914 293.45-245.52 368.25c-14.676 25.141-5.7852 57.348 19.609 71.762 25.645 14.594 58.117 5.7109 72.891-19.418 0 0 256.06-385.08 257.01-387.51 0 0 13.211 53.438 13.211 53.699l-38.426 288.89c-4.8242 28.766 14.688 55.621 43.703 60.457 29.016 4.8242 56.57-14.426 61.395-43.008l39.746-297.17c1.2109-7.6094-0.34766-24.266-2.0742-31.609l-87.578-347.95 227.82-41.027c24.34-4.3047 40.828-27.789 36.508-52.23z"/>
+          </svg>
+        </div>
+        <div class="profile-tab active" onclick="setProfileTab(3,this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <div class="stats-section-header">
+          <span class="stats-section-title">Stats</span>
+          <button class="dropdown-btn">All ▾</button>
+        </div>
+        <div class="two-col">
+          <div class="stat-big-card avg-score-card">
+            <div class="stat-big-lbl">AVG. SCORE</div>
+            <div class="stat-big-val">—</div>
+          </div>
+          <div class="stat-big-card handicap-card">
+            <div class="stat-big-lbl">HANDICAP</div>
+            <div class="stat-big-val">—</div>
+          </div>
+        </div>
+
+        <div class="stats-point-header">
+          <span class="stats-section-title">Stats Point</span>
+          <div class="toggle-row">
+            <button class="toggle-btn active">%</button>
+            <button class="toggle-btn">#</button>
+          </div>
+        </div>
+
+        <div class="donut-section">
+          <div class="donut-wrap">
+            <!--
+              Circumference = 2π × 40 = 251.33
+              7 equal slots: 251.33 / 7 = 35.9 each
+              Segment = 33, gap = 2.9  →  dasharray="33 218.33"
+              Start from 12-o'clock: base offset = 251.33 × 0.25 = 62.83
+              Segment i offset = 62.83 − i × 35.9
+            -->
+            <svg class="donut-svg" viewBox="0 0 100 100">
+              <!-- Track -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#E2EDE8" stroke-width="16"/>
+              <!-- 1. HOLE IN ONE #F5C842  offset=62.83 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#F5C842" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="62.83"/>
+              <!-- 2. ALBATROSS  #3DD68C  offset=26.93 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#3DD68C" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="26.93"/>
+              <!-- 3. EAGLE      #FF8C42  offset=-8.97 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#FF8C42" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="-8.97"/>
+              <!-- 4. BIRDIE     #5B9BD5  offset=-44.87 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#5B9BD5" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="-44.87"/>
+              <!-- 5. PAR        #9B7FD4  offset=-80.77 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#9B7FD4" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="-80.77"/>
+              <!-- 6. BOGEY      #F07BAA  offset=-116.67 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#F07BAA" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="-116.67"/>
+              <!-- 7. DOUBLE BOGEY #A0A0A0 offset=-152.57 -->
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#A0A0A0" stroke-width="16" stroke-dasharray="35.9 215.43" stroke-dashoffset="-152.57"/>
+              <!-- Center text -->
+              <text x="50" y="46" text-anchor="middle" font-size="12" font-weight="800" fill="#1A1A1A" font-family="Plus Jakarta Sans, sans-serif">0</text>
+              <text x="50" y="58" text-anchor="middle" font-size="7.5" fill="#7A8A84" font-family="Plus Jakarta Sans, sans-serif">rounds</text>
+            </svg>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#F5C842"></div>HOLE IN ONE<span class="legend-val">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#3DD68C"></div>ALBATROSS<span class="legend-val">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#FF8C42"></div>EAGLE<span class="legend-val">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#5B9BD5"></div>BIRDIE<span class="legend-val">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#9B7FD4"></div>PAR<span class="legend-val">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#F07BAA"></div>BOGEY<span class="legend-val">0</span></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#A0A0A0"></div>DOUBLE BOGEY<span class="legend-val">0</span></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="stat-big-card">
+            <div class="stat-big-lbl">AVG. PUTT / HOLE</div>
+            <div class="stat-big-val">—</div>
+          </div>
+          <div class="stat-big-card">
+            <div class="stat-big-lbl">ON FAIRWAY</div>
+            <div class="stat-big-val">—</div>
+          </div>
+        </div>
+
+        <div class="stats-section-header" style="margin-top:16px">
+          <span class="stats-section-title">Other stat</span>
+        </div>
+        <div class="card other-stat p16">
+          <div class="other-stat-row">TRIPLE BOGEY<span class="other-stat-val">0</span></div>
+          <div class="other-stat-row">OVER TRIPLE BOGEY<span class="other-stat-val">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /page-profile -->
+
+
+  <!-- ══════════════════════════════════════════
+       PAGE 4: FRIENDS (empty — disabled)
+  ══════════════════════════════════════════ -->
+  <div class="page" id="page-friends"></div>
+
+  <!-- ── Play page ── -->
+  <div class="page" id="page-play">
+    <div class="play-header">
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-center"></div>
+        <div class="status-icons">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="16" width="3" height="7" rx="1"/><rect x="6.5" y="11" width="3" height="12" rx="1"/><rect x="12" y="6" width="3" height="17" rx="1"/><rect x="17.5" y="1" width="3" height="22" rx="1" opacity="0.3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 10.5v3a1.5 1.5 0 0 0 0-3z"/><rect x="2.5" y="8.5" width="13" height="8" rx="1"/></svg>
+        </div>
+      </div>
+      <div class="play-page-title">Play</div>
+    </div>
+    <!-- Golf course illustration -->
+    <div class="play-illustration-wrap">
+      <img src="./court-removebg.png" alt="Golf court">
+    </div>
+
+    <!-- CTA section -->
+    <div class="play-cta-wrap">
+      <div class="play-cta-title">Nice to see you at BirdieX!</div>
+      <div class="play-cta-sub">Set up a new match and invite friends!</div>
+      <button class="play-cta-btn">
+        <div class="play-cta-plus">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        Get Start!
+      </button>
+    </div>
+  </div>
+
+
+
+
+  <!-- Golf course bg — visible on Feed & Match only -->
+  <img id="bg-illustration" src="./back-ground.png" alt="" aria-hidden="true">
+
+  <!-- ══════════════════════════════════════════
+       BOTTOM NAV
+  ══════════════════════════════════════════ -->
+  <nav id="bottom-nav">
+    <button class="nav-item active" id="nav-feed" onclick="setPage('feed')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-label">Feed</span>
+    </button>
+    <button class="nav-item" id="nav-match" onclick="setPage('match')">
+      <svg viewBox="0 0 88 72" fill="currentColor" stroke="none" width="22" height="22">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M78.2043 52.4884L69.6887 62.2111C68.759 63.2736 67.1223 63.3283 66.1223 62.3283L63.5559 59.7619C63.1496 59.3557 62.4895 59.3557 62.0793 59.7619L62.0168 59.8244L56.5754 54.383C65.0168 49.8205 70.7514 40.891 70.7514 30.617C70.7514 27.1639 70.0795 23.8748 68.8959 20.8397L74.349 15.3866L74.388 15.4257C74.7943 15.8319 75.4544 15.8319 75.8646 15.4257L87.1926 4.09769C87.5989 3.69144 87.5989 3.03129 87.1926 2.62109L84.8762 0.304688C84.47 -0.101562 83.8098 -0.101562 83.3996 0.304688L72.0716 11.6327C71.6654 12.0389 71.6654 12.6991 72.0716 13.1093L72.1341 13.1718L67.513 17.7929C62.9622 9.35929 54.033 3.62089 43.763 3.62089C33.493 3.62089 24.564 9.35919 19.997 17.8009L15.3759 13.1798L15.4384 13.1173C15.8447 12.711 15.8447 12.0509 15.4384 11.6407L4.11043 0.312687C3.70418 -0.0935631 3.04403 -0.0935631 2.63383 0.312687L0.317427 2.62909C-0.0888231 3.03534 -0.0888231 3.69549 0.317427 4.10569L11.6454 15.4337C12.0517 15.8399 12.7118 15.8399 13.122 15.4337L13.1611 15.3946L18.6142 20.8477C17.4345 23.8829 16.7587 27.1719 16.7587 30.625C16.7587 40.895 22.4931 49.824 30.9387 54.391L25.4973 59.8324L25.4348 59.7699C25.0285 59.3637 24.3684 59.3637 23.9582 59.7699L21.3918 62.3363C20.3918 63.3363 18.7551 63.2816 17.8254 62.2191L9.30979 52.4964C6.99339 49.8558 2.66919 50.2308 1.02859 53.3363C0.44265 54.4496 0.0364001 55.7855 0.00129009 57.3558C-0.13933 64.3167 11.2553 71.0828 14.7863 71.3478C18.9191 71.6564 21.7941 69.508 27.7513 63.5509C28.1575 63.1446 28.1497 62.4884 27.7435 62.0821L27.7044 62.043L33.9739 55.7735C37.0091 56.9532 40.2981 57.629 43.7512 57.629C47.2043 57.629 50.4934 56.9571 53.5285 55.7735L59.798 62.043L59.759 62.0821C59.3527 62.4883 59.3488 63.1446 59.7511 63.5509C65.7081 69.5079 68.5831 71.6564 72.7161 71.3478C76.2473 71.0822 87.6421 64.3166 87.5011 57.3558C87.4699 55.7855 87.0636 54.4535 86.4738 53.3363C84.8449 50.223 80.5207 49.8478 78.2043 52.4884ZM3.01627 54.4767C2.38346 55.6759 2.05142 56.9884 2.02407 58.379C1.99673 59.5626 2.3483 60.7618 2.95377 61.9337C1.89907 60.4571 1.23107 58.9025 1.26237 57.3751C1.2858 56.1407 1.58268 54.9767 2.14518 53.9142C2.70768 52.8478 3.73498 52.1486 4.96548 52.008C5.12173 51.9885 5.27406 51.9807 5.42641 51.9807C5.99282 51.9807 6.54752 52.1018 7.05532 52.3322C6.94204 52.3244 6.83266 52.2971 6.71548 52.2971C6.5436 52.2971 6.36782 52.3088 6.19595 52.3283C4.80925 52.4885 3.65297 53.2736 3.01627 54.4767ZM12.7507 68.2387C12.6491 68.3403 12.485 68.3403 12.3835 68.2387L6.13347 61.9887C6.03191 61.8872 6.03191 61.7231 6.13347 61.6215C6.23503 61.52 6.3991 61.52 6.50067 61.6215L12.7507 67.8716C12.8522 67.9731 12.8522 68.1411 12.7507 68.2387ZM15.2859 67.2973C15.1843 67.3989 15.0202 67.3989 14.9187 67.2973L6.61398 58.9926C6.51242 58.8911 6.51242 58.727 6.61398 58.6254C6.71554 58.5239 6.87961 58.5239 6.98117 58.6254L15.2859 66.9301C15.3874 67.0317 15.3874 67.1958 15.2859 67.2973ZM17.9461 66.4809C17.8445 66.5825 17.6804 66.5825 17.5789 66.4809L6.09088 54.9929C5.98932 54.8914 5.98932 54.7273 6.09088 54.6257C6.19244 54.5242 6.3565 54.5242 6.45807 54.6257L17.9461 66.1137C18.0476 66.2114 18.0476 66.3793 17.9461 66.4809ZM43.7621 54.5079C30.5711 54.5079 19.8751 43.8129 19.8751 30.6209C19.8751 17.4289 30.5701 6.73392 43.7621 6.73392C56.9541 6.73392 67.6491 17.4289 67.6491 30.6209C67.6491 43.8129 56.9541 54.5079 43.7621 54.5079ZM72.6101 67.2969C72.5085 67.3985 72.3444 67.3985 72.2429 67.2969C72.1413 67.1954 72.1413 67.0313 72.2429 66.9297L80.5476 58.625C80.6491 58.5235 80.8132 58.5235 80.9148 58.625C81.0163 58.7266 81.0163 58.8906 80.9148 58.9922L72.6101 67.2969ZM81.3953 61.9883L75.1453 68.2383C75.0437 68.3399 74.8796 68.3399 74.7781 68.2383C74.6765 68.1368 74.6765 67.9727 74.7781 67.8711L81.0281 61.6211C81.1296 61.5196 81.2937 61.5196 81.3953 61.6211C81.4968 61.7227 81.4968 61.8867 81.3953 61.9883ZM81.4343 54.9922L69.9463 66.4802C69.8448 66.5818 69.6807 66.5818 69.5791 66.4802C69.4776 66.3786 69.4776 66.2146 69.5791 66.113L81.0671 54.625C81.1687 54.5235 81.3328 54.5235 81.4343 54.625C81.5359 54.7266 81.5359 54.8906 81.4343 54.9922ZM84.571 61.9336C85.1765 60.7617 85.5241 59.5625 85.5007 58.3789C85.4734 56.9883 85.1374 55.6758 84.5085 54.4766C83.8757 53.2735 82.7155 52.4883 81.3288 52.3282C81.153 52.3087 80.9812 52.297 80.8093 52.297C80.696 52.297 80.5827 52.3243 80.4695 52.3321C80.9773 52.1016 81.532 51.9806 82.0984 51.9806C82.2507 51.9806 82.407 51.9884 82.5593 52.0079C83.7898 52.1524 84.8171 52.8477 85.3796 53.9141C85.9382 54.9766 86.239 56.1407 86.2624 57.375C86.2937 58.9023 85.6257 60.457 84.571 61.9336ZM64.872 30.6216C64.872 42.2776 55.4228 51.7306 43.763 51.7306C40.8372 51.7306 38.0521 51.133 35.5208 50.0587C37.263 50.4806 39.0755 50.7306 40.9466 50.7306C53.6066 50.7306 63.8726 40.4646 63.8726 27.8046C63.8726 25.9296 63.6226 24.121 63.2007 22.3749C64.2749 24.9101 64.872 27.6958 64.872 30.6216ZM27.04 22.0825C26.4111 22.5044 25.8134 22.6411 25.4189 22.3794C24.6924 21.895 24.9345 20.2583 25.9619 18.7271C26.9853 17.1919 28.4072 16.3443 29.1299 16.8287C29.5244 17.0943 29.6221 17.6998 29.4776 18.442C29.4463 18.1842 29.3526 17.9772 29.1807 17.86C28.6338 17.4967 27.5713 18.1334 26.7979 19.2858C26.0284 20.4381 25.8448 21.6686 26.3916 22.0319C26.5596 22.1451 26.79 22.1528 27.04 22.0825ZM29.9658 15.9848C29.4814 15.2583 30.3291 13.8403 31.8642 12.8168C33.3994 11.7934 35.0361 11.5512 35.5165 12.2738C35.7821 12.6684 35.6376 13.266 35.2196 13.8949C35.29 13.6449 35.2861 13.4184 35.1689 13.2465C34.8056 12.6996 33.5751 12.8832 32.4228 13.6528C31.2705 14.4223 30.6298 15.4887 30.997 16.0356C31.1102 16.2074 31.3212 16.3012 31.579 16.3324C30.8407 16.4809 30.2314 16.3794 29.9658 15.9848ZM32.4619 19.3207C31.4815 20.3012 31.0635 21.4691 31.5283 21.934C31.6729 22.0785 31.8955 22.1293 32.1572 22.1098C31.458 22.3989 30.8447 22.4184 30.5088 22.0864C29.8917 21.4692 30.4503 19.9145 31.751 18.6059C33.0557 17.3012 34.6104 16.7465 35.2315 17.3637C35.5675 17.6996 35.544 18.3129 35.255 19.0121C35.2745 18.7542 35.2237 18.5316 35.0792 18.3831C34.6144 17.9222 33.4424 18.3402 32.4619 19.3207ZM34.6728 25.0785C34.8174 25.223 35.04 25.2738 35.3017 25.2543C34.6025 25.5434 33.9892 25.5629 33.6533 25.2309C33.0361 24.6137 33.5947 23.059 34.8955 21.7504C36.2002 20.4457 37.7549 19.891 38.376 20.5082C38.712 20.8441 38.6885 21.4574 38.3995 22.1566C38.419 21.8987 38.3682 21.6761 38.2237 21.5276C37.7589 21.0628 36.5909 21.4808 35.6104 22.4612C34.626 23.4456 34.208 24.6175 34.6728 25.0785ZM25.8994 24.8324C25.7705 24.6059 25.6065 24.4496 25.4033 24.4105C24.7588 24.2816 24.0205 25.2816 23.751 26.641C23.4815 28.0005 23.7823 29.2074 24.4268 29.3363C24.6299 29.3754 24.8409 29.2934 25.0479 29.1332C24.626 29.7621 24.126 30.1215 23.6612 30.0277C22.8057 29.8559 22.4034 28.2543 22.7628 26.4457C23.1221 24.6371 24.1066 23.309 24.9659 23.4769C25.4268 23.5707 25.751 24.0941 25.8994 24.8324ZM36.6184 11.8204C36.4465 10.965 37.7786 9.98062 39.5832 9.61732C41.3918 9.25794 42.9973 9.66029 43.1652 10.5158C43.259 10.9806 42.8996 11.4806 42.2707 11.9025C42.4309 11.6993 42.5129 11.4845 42.4738 11.2853C42.3449 10.6447 41.1418 10.34 39.7785 10.6095C38.4191 10.879 37.4191 11.6212 37.548 12.2618C37.5871 12.4649 37.7472 12.629 37.9699 12.7579C37.2355 12.6094 36.7122 12.2853 36.6184 11.8204ZM30.5442 24.4494C30.4348 24.215 30.2825 24.0471 30.0833 23.9885C29.4505 23.8127 28.638 24.7541 28.263 26.0862C27.8919 27.4221 28.0989 28.6448 28.7317 28.8206C28.931 28.8753 29.1497 28.8089 29.3645 28.6682C28.8997 29.262 28.3724 29.5823 27.9153 29.4573C27.0755 29.2229 26.7942 27.594 27.2903 25.8167C27.7864 24.0394 28.8684 22.7894 29.7083 23.0237C30.1693 23.1526 30.4544 23.6994 30.5442 24.4494ZM36.1653 16.5744C35.9309 15.7346 37.1809 14.6525 38.9583 14.1564C40.7356 13.6603 42.3645 13.9416 42.5989 14.7814C42.7278 15.2385 42.4075 15.7658 41.8099 16.2306C41.9544 16.0158 42.0208 15.797 41.9622 15.5978C41.7864 14.965 40.5599 14.758 39.2278 15.1291C37.8919 15.5002 36.9544 16.3166 37.1301 16.9494C37.1848 17.1486 37.3567 17.3009 37.591 17.4103C36.841 17.3126 36.2942 17.0276 36.1653 16.5744Z"/>
+      </svg>
+      <span class="nav-label">Match</span>
+    </button>
+    <button class="nav-center-x" aria-label="BirdieX" onclick="setPage('play'); this.classList.add('play-active'); document.getElementById('app').classList.add('play-active');">
+      <img src="./play-icon.png" alt="" aria-hidden="true" style="width:36px;height:36px;object-fit:contain;display:block;mix-blend-mode:multiply;">
+    </button>
+    <button class="nav-item nav-disabled" id="nav-friends" aria-disabled="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="nav-label">Friends</span>
+    </button>
+    <button class="nav-item" id="nav-profile" onclick="setPage('profile')">
+      <div style="width:22px;height:22px;border-radius:50%;overflow:hidden;flex-shrink:0;">
+        <img src="./Avatar.png" alt="Profile" style="width:44px;height:44px;object-fit:cover;object-position:center 10%;margin:-11px;display:block;">
+      </div>
+      <span class="nav-label">Profile</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+function setPage(name) {
+  if (name === 'friends') return; // disabled — do nothing
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  // remove play-active from X button and #app when switching pages
+  document.querySelector('.nav-center-x').classList.remove('play-active');
+  document.getElementById('app').classList.remove('play-active');
+  document.getElementById('app').classList.toggle('profile-active', name === 'profile');
+
+  const pageMap = { feed: 'page-feed', match: 'page-match', profile: 'page-profile', friends: 'page-friends', play: 'page-play' };
+  const page = document.getElementById(pageMap[name] || 'page-feed');
+  if (page) {
+    page.classList.add('active');
+    // Reset scroll to top (not for Play page)
+    if (name !== 'play') {
+      page.scrollTop = 0;
+      const scrollBody = page.querySelector('.scroll-body');
+      if (scrollBody) scrollBody.scrollTop = 0;
+    }
+    // Re-trigger stagger on page switch
+    page.querySelectorAll('.feed-item').forEach((el, i) => {
+      el.style.animation = 'none';
+      el.offsetHeight; // reflow
+      el.style.animation = '';
+    });
+  }
+
+  const nav = document.getElementById('nav-' + name);
+  if (nav) nav.classList.add('active');
+
+  const fab = document.querySelector('.fab');
+  if (fab) fab.style.display = name === 'match' ? 'flex' : 'none';
+}
+
+function setMatchTab(tab) {
+  document.getElementById('tab-opening').classList.toggle('active', tab === 'opening');
+  document.getElementById('tab-live').classList.toggle('active', tab === 'live');
+}
+
+function setProfileTab(idx, el) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Toggle btn logic
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    this.closest('.toggle-row').querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ─── Banner carousel ───
+(function() {
+  const track = document.getElementById('bannerTrack');
+  const dots  = document.querySelectorAll('.banner-dots .dot');
+  const total = 3;
+  let current = 0;
+  let timer;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function goTo(idx) {
+    current = ((idx % total) + total) % total;
+    if (reducedMotion) {
+      track.style.transition = 'none';
+    } else {
+      track.style.transition = 'transform 500ms cubic-bezier(0.25, 0, 0, 1)';
+    }
+    track.style.transform = `translateX(${-current * 33.333}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  function next() { goTo(current + 1); }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(next, 4000);
+  }
+
+  // Dot click
+  dots.forEach(dot => {
+    dot.addEventListener('click', function() {
+      goTo(parseInt(this.dataset.slide));
+      startTimer(); // reset timer on manual nav
+    });
+  });
+
+  startTimer();
+})();
+
+// ─── Real-time clock ───
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2, '0');
+  const m = now.getMinutes().toString().padStart(2, '0');
+  const timeStr = h + ':' + m;
+  document.querySelectorAll('.status-time').forEach(el => el.textContent = timeStr);
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+setPage('feed');
+</script>
+</body>
+</html>
