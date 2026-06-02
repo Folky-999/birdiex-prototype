@@ -130,6 +130,8 @@ body {
 .page.active { display: flex; }
 /* Feed page only: transparent so #app::before gradient shows through */
 #page-feed { background: transparent; }
+/* Match & Profile: isolate from #app::before gradient */
+#page-match, #page-profile, #page-play { isolation: isolate; }
 
 /* ─── Scroll area ─── */
 .scroll-body {
@@ -701,7 +703,7 @@ button:focus-visible {
 
 /* ─── Match Page ─── */
 .match-header {
-  background: linear-gradient(180deg, #5ECFAA 0%, #7DDCBC 12%, #9DE8CC 28%, #BCF0DC 45%, #D6F7EE 62%, #EAFAF4 78%, #F5FCFA 90%, #FFFFFF 100%);
+  background: linear-gradient(180deg, #C8F0E2 0%, #D8F5EC 25%, #E8FAF4 50%, #F4FCFA 75%, #FFFFFF 100%);
   padding: 0 16px 0;
   flex-shrink: 0;
   position: relative;
