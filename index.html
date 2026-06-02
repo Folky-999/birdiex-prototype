@@ -77,19 +77,6 @@ body {
 #app.profile-active::before,
 #app.play-active::before { opacity: 0; }
 
-/* ─── Cloud SVG decoration — fixed below topbar, left side ─── */
-#cloud-deco {
-  position: absolute;
-  top: 148px; /* below status-bar + topbar + post-input-bar */
-  left: -18px;
-  width: 180px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.72;
-  transition: opacity 300ms cubic-bezier(0.25, 0, 0, 1);
-}
-#app.profile-active #cloud-deco,
-#app.play-active #cloud-deco { opacity: 0; }
 
 /* ─── Pull-to-refresh ─── */
 #ptr-indicator {
@@ -1092,15 +1079,6 @@ button:focus-visible {
     </svg>
   </div>
 
-  <!-- Cloud decoration -->
-  <svg id="cloud-deco" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <ellipse cx="80" cy="90" rx="72" ry="28" fill="white" opacity="0.55"/>
-    <ellipse cx="60" cy="80" rx="48" ry="24" fill="white" opacity="0.6"/>
-    <ellipse cx="95" cy="75" rx="52" ry="26" fill="white" opacity="0.65"/>
-    <ellipse cx="130" cy="82" rx="38" ry="20" fill="white" opacity="0.5"/>
-    <ellipse cx="72" cy="68" rx="32" ry="22" fill="white" opacity="0.7"/>
-    <ellipse cx="105" cy="64" rx="36" ry="22" fill="white" opacity="0.6"/>
-  </svg>
 
   <!-- ══════════════════════════════════════════
        PAGE 1: FEED
