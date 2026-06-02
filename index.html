@@ -54,9 +54,73 @@ body {
   display: flex;
   flex-direction: column;
 }
+/* Deep gradient overlay — Feed & Match pages only */
+#app::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 520px;
+  background: linear-gradient(180deg,
+    #5ECFAA 0%,
+    #7DDCBC 8%,
+    #9DE8CC 18%,
+    #BCF0DC 32%,
+    #D6F7EE 48%,
+    #EAFAF4 62%,
+    #F5FCFA 76%,
+    rgba(255,255,255,0) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 300ms cubic-bezier(0.25, 0, 0, 1);
+}
+#app.profile-active::before,
+#app.play-active::before { opacity: 0; }
+
+/* ─── Cloud SVG decoration — fixed below topbar, left side ─── */
+#cloud-deco {
+  position: absolute;
+  top: 148px; /* below status-bar + topbar + post-input-bar */
+  left: -18px;
+  width: 180px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.72;
+  transition: opacity 300ms cubic-bezier(0.25, 0, 0, 1);
+}
+#app.profile-active #cloud-deco,
+#app.play-active #cloud-deco { opacity: 0; }
+
+/* ─── Pull-to-refresh ─── */
+#ptr-indicator {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-48px);
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  opacity: 0;
+  transition: opacity 150ms cubic-bezier(0.25, 0, 0, 1);
+  pointer-events: none;
+  z-index: 200;
+}
+#ptr-indicator.visible { opacity: 1; }
+#ptr-indicator svg {
+  width: 20px; height: 20px;
+  color: var(--bx-green);
+  animation: ptrSpin 0.8s linear infinite;
+}
+@keyframes ptrSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  #ptr-indicator svg { animation: none; }
+}
 
 /* ─── Pages ─── */
-.page { display: none; flex-direction: column; flex: 1; min-height: 0; background: #FFFFFF; }
+.page { display: none; flex-direction: column; flex: 1; min-height: 0; background: transparent; }
 .page.active { display: flex; }
 
 /* ─── Scroll area ─── */
@@ -66,7 +130,7 @@ body {
   overflow-x: clip; /* clips peeking slides without blocking iOS scroll */
   padding-bottom: 88px;
   scrollbar-width: none;
-  background: #FFFFFF;
+  background: transparent; /* let #app::before gradient show through */
 }
 .scroll-body::-webkit-scrollbar { display: none; }
 
@@ -88,7 +152,7 @@ button:focus-visible {
 
 /* ─── Header ─── */
 .header {
-  background: linear-gradient(180deg, #5ECFAA 0%, #7DDCBC 12%, #9DE8CC 28%, #BCF0DC 45%, #D6F7EE 62%, #EAFAF4 78%, #F5FCFA 90%, #FFFFFF 100%);
+  background: transparent; /* gradient now comes from #app::before */
   padding: 0 16px 16px;
   position: relative;
   z-index: 100;
@@ -1021,6 +1085,23 @@ button:focus-visible {
 <body>
 <div id="app">
 
+  <!-- Pull-to-refresh indicator -->
+  <div id="ptr-indicator">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+  </div>
+
+  <!-- Cloud decoration -->
+  <svg id="cloud-deco" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <ellipse cx="80" cy="90" rx="72" ry="28" fill="white" opacity="0.55"/>
+    <ellipse cx="60" cy="80" rx="48" ry="24" fill="white" opacity="0.6"/>
+    <ellipse cx="95" cy="75" rx="52" ry="26" fill="white" opacity="0.65"/>
+    <ellipse cx="130" cy="82" rx="38" ry="20" fill="white" opacity="0.5"/>
+    <ellipse cx="72" cy="68" rx="32" ry="22" fill="white" opacity="0.7"/>
+    <ellipse cx="105" cy="64" rx="36" ry="22" fill="white" opacity="0.6"/>
+  </svg>
+
   <!-- ══════════════════════════════════════════
        PAGE 1: FEED
   ══════════════════════════════════════════ -->
@@ -1822,6 +1903,43 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
   setPos(1, false);
   updateDots(0);
   startTimer();
+})();
+
+// ─── Pull-to-refresh (visual only) ───
+(function() {
+  const feedScroll = document.querySelector('#page-feed .scroll-body');
+  const ptr = document.getElementById('ptr-indicator');
+  if (!feedScroll || !ptr) return;
+
+  let startY = 0;
+  let isPulling = false;
+  let refreshing = false;
+
+  feedScroll.addEventListener('touchstart', e => {
+    if (feedScroll.scrollTop === 0) {
+      startY = e.touches[0].clientY;
+      isPulling = true;
+    }
+  }, { passive: true });
+
+  feedScroll.addEventListener('touchmove', e => {
+    if (!isPulling || refreshing) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 30) ptr.classList.add('visible');
+    else ptr.classList.remove('visible');
+  }, { passive: true });
+
+  feedScroll.addEventListener('touchend', () => {
+    if (!isPulling) return;
+    isPulling = false;
+    if (!ptr.classList.contains('visible')) return;
+    refreshing = true;
+    // Spin for 1.2s then hide
+    setTimeout(() => {
+      ptr.classList.remove('visible');
+      refreshing = false;
+    }, 1200);
+  });
 })();
 
 // ─── Real-time clock ───
