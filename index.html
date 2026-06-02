@@ -50,7 +50,8 @@ body {
   height: 100vh;
   background: #FFFFFF;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden; /* clips banner peek at app edge */
+  overflow-y: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -137,7 +138,7 @@ body {
 .scroll-body {
   flex: 1;
   overflow-y: auto;
-  overflow-x: clip; /* clips peeking slides without blocking iOS scroll */
+  overflow-x: visible; /* #app handles horizontal clipping */
   padding-bottom: 88px;
   scrollbar-width: none;
   background: transparent;
@@ -486,12 +487,17 @@ button:focus-visible {
   transform: translateX(-50%);
   width: 390px;
   height: auto;
-  z-index: 0;
+  z-index: 0; /* behind scroll content */
   pointer-events: none;
   object-fit: cover;
   object-position: bottom;
   display: block;
   transition: opacity 200ms cubic-bezier(0.25, 0, 0, 1);
+}
+/* Ensure scroll content sits above bg-illustration */
+.scroll-body {
+  position: relative;
+  z-index: 1;
 }
 #app.profile-active #bg-illustration,
 #app.play-active #bg-illustration { opacity: 0; pointer-events: none; }
