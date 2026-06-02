@@ -79,52 +79,6 @@ body {
 #app.play-active::before { opacity: 0; }
 
 
-/* ─── Pull-to-refresh ─── */
-#ptr-indicator {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,0.90);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-  pointer-events: none;
-  z-index: 200;
-  /* hidden below header by default */
-  opacity: 0;
-  top: 0;
-  transition: top 250ms cubic-bezier(0.25, 0, 0, 1), opacity 200ms cubic-bezier(0.25, 0, 0, 1);
-}
-#ptr-indicator.pulling {
-  opacity: 1;
-}
-#ptr-indicator.refreshing {
-  opacity: 1;
-  transition: top 250ms cubic-bezier(0.25, 0, 0, 1);
-}
-#ptr-indicator svg {
-  width: 20px; height: 20px;
-  color: var(--bx-green);
-}
-#ptr-indicator.refreshing svg {
-  animation: ptrSpin 0.75s linear infinite;
-}
-@keyframes ptrSpin { to { transform: rotate(360deg); } }
-
-/* Push scroll-body down when refreshing */
-#page-feed .scroll-body {
-  transition: padding-top 250ms cubic-bezier(0.25, 0, 0, 1);
-}
-#page-feed .scroll-body.ptr-open {
-  padding-top: 52px;
-}
-@media (prefers-reduced-motion: reduce) {
-  #ptr-indicator svg { animation: none; }
-  #ptr-indicator, #page-feed .scroll-body { transition: none !important; }
-}
 
 /* ─── Pages ─── */
 .page { display: none; flex-direction: column; flex: 1; min-height: 0; background: #FFFFFF; }
@@ -133,6 +87,8 @@ body {
 #page-feed { background: transparent; }
 /* Match & Profile: isolate from #app::before gradient */
 #page-match, #page-profile, #page-play { isolation: isolate; }
+/* Match scroll content above bg-illustration (z-index:0) */
+#page-match .scroll-body { z-index: 2; }
 
 /* ─── Scroll area ─── */
 .scroll-body {
@@ -1104,12 +1060,6 @@ button:focus-visible {
 <body>
 <div id="app">
 
-  <!-- Pull-to-refresh indicator -->
-  <div id="ptr-indicator">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-    </svg>
-  </div>
 
 
   <!-- ══════════════════════════════════════════
@@ -1915,75 +1865,6 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
   startTimer();
 })();
 
-// ─── Pull-to-refresh (visual only) ───
-(function() {
-  const feedScroll = document.querySelector('#page-feed .scroll-body');
-  const ptr = document.getElementById('ptr-indicator');
-  if (!feedScroll || !ptr) return;
-
-  // Position ptr just below the header (status+topbar+post-input-bar)
-  const HEADER_H = document.querySelector('#page-feed .header').offsetHeight;
-  const PTR_SIZE = 36;
-  const PTR_GAP = 10; // gap below header when refreshing
-  const PTR_REST = HEADER_H + PTR_GAP; // final resting top position
-
-  let startY = 0;
-  let isPulling = false;
-  let refreshing = false;
-  const TRIGGER = 60; // px pull needed to trigger refresh
-
-  feedScroll.addEventListener('touchstart', e => {
-    if (feedScroll.scrollTop === 0 && !refreshing) {
-      startY = e.touches[0].clientY;
-      isPulling = true;
-    }
-  }, { passive: true });
-
-  feedScroll.addEventListener('touchmove', e => {
-    if (!isPulling || refreshing) return;
-    const dy = Math.max(0, e.touches[0].clientY - startY);
-    if (dy > 10) {
-      // Follow finger loosely (resistance 0.4)
-      const loose = Math.min(dy * 0.4, PTR_SIZE + PTR_GAP + 20);
-      ptr.style.top = (HEADER_H - PTR_SIZE + loose) + 'px';
-      ptr.classList.add('pulling');
-      ptr.classList.remove('refreshing');
-    } else {
-      ptr.style.top = '0px';
-      ptr.classList.remove('pulling');
-    }
-  }, { passive: true });
-
-  feedScroll.addEventListener('touchend', e => {
-    if (!isPulling) return;
-    isPulling = false;
-    const dy = Math.max(0, e.changedTouches[0].clientY - startY);
-
-    if (dy >= TRIGGER) {
-      // Snap to rest position and start refreshing
-      ptr.style.top = PTR_REST + 'px';
-      ptr.classList.remove('pulling');
-      ptr.classList.add('refreshing');
-      feedScroll.classList.add('ptr-open');
-      refreshing = true;
-
-      setTimeout(() => {
-        // Done — collapse back
-        ptr.classList.remove('refreshing');
-        ptr.classList.remove('pulling');
-        feedScroll.classList.remove('ptr-open');
-        ptr.style.top = '0px';
-        setTimeout(() => {
-          refreshing = false;
-        }, 300);
-      }, 1400);
-    } else {
-      // Not enough pull — collapse
-      ptr.style.top = '0px';
-      ptr.classList.remove('pulling');
-    }
-  });
-})();
 
 // ─── Real-time clock ───
 function updateClock() {
