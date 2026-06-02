@@ -89,6 +89,20 @@ body {
 #page-match, #page-profile, #page-play { isolation: isolate; }
 /* Match scroll content above bg-illustration (z-index:0) */
 #page-match .scroll-body { z-index: 2; }
+/* Match page bg illustration — same position as feed */
+#match-bg-illustration {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 390px;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  object-fit: cover;
+  object-position: bottom;
+  display: block;
+}
 
 /* ─── Scroll area ─── */
 .scroll-body {
@@ -239,19 +253,11 @@ button:focus-visible {
 .banner {
   height: 192px;
   position: relative;
-  cursor: grab;
-  user-select: none;
   z-index: 1;
-  overflow: hidden; /* default: show only 1 slide */
+  overflow: hidden;
   border-radius: var(--bx-radius-card);
   margin: 16px 16px 0;
 }
-/* During drag: open overflow so next slide peeks in */
-.banner.is-dragging {
-  overflow: visible;
-  border-radius: 0; /* let each slide handle its own radius */
-}
-.banner:active { cursor: grabbing; }
 .banner-slides-wrap {
   display: flex;
   width: 500%; /* 5 slides: clone-last + 3 real + clone-first */
@@ -263,16 +269,11 @@ button:focus-visible {
   height: 100%;
   flex-shrink: 0;
   position: relative;
-  border-radius: var(--bx-radius-card); /* each slide has its own radius */
-  overflow: hidden;
-  padding: 0 4px; /* small gap between peeking slides */
-  box-sizing: border-box;
 }
 .banner-slide img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: var(--bx-radius-card);
 }
 /* banner overlay removed — images are shown clean */
 /* Dots — absolute on the banner card, not inside overlay */
@@ -1279,6 +1280,7 @@ button:focus-visible {
        PAGE 2: MATCH
   ══════════════════════════════════════════ -->
   <div class="page" id="page-match">
+    <img id="match-bg-illustration" src="./assets/images/back-ground.png" alt="" aria-hidden="true">
     <div class="match-header">
       <div class="status-bar">
         <span class="status-time">9:41</span>
@@ -1787,89 +1789,6 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
   // ── Drag-to-peek (touch + mouse) ──
   const banner = document.getElementById('banner');
   const bannerW = () => banner.offsetWidth;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let dragging = false;
-  let lockedAxis = null; // 'h' | 'v' | null
-
-  function dragStart(clientX, clientY) {
-    dragStartX = clientX;
-    dragStartY = clientY;
-    dragging = true;
-    lockedAxis = null;
-    clearInterval(timer);
-    // Snap immediately to known current slide — avoids mid-transition parse bugs on iOS
-    track.style.transition = 'none';
-    track.style.transform = `translateX(${-current * 20}%)`;
-  }
-
-  function dragMove(clientX, clientY) {
-    if (!dragging) return;
-    const dx = clientX - dragStartX;
-    const dy = clientY - dragStartY;
-
-    // Lock axis on first significant move
-    if (!lockedAxis && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
-      lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
-      if (lockedAxis === 'h') banner.classList.add('is-dragging'); // open peek
-    }
-    if (lockedAxis !== 'h') return;
-
-    // Resistance at edges (first/last real slide)
-    let resistance = 1;
-    if ((current === 1 && dx > 0) || (current === total && dx < 0)) {
-      resistance = 0.25;
-    }
-    const baseOffset = -current * 20; // % of track
-    const pxOffset = dx * resistance;
-    const pctOffset = (pxOffset / (bannerW() * 5)) * 100;
-    track.style.transform = `translateX(calc(${baseOffset}% + ${pxOffset}px))`;
-  }
-
-  function dragEnd(clientX) {
-    if (!dragging) return;
-    dragging = false;
-    banner.classList.remove('is-dragging'); // close peek
-    if (lockedAxis !== 'h') { startTimer(); return; }
-
-    const dx = clientX - dragStartX;
-    const threshold = bannerW() * 0.2; // 20% of banner width
-
-    track.style.transition = 'transform 350ms cubic-bezier(0.25, 0, 0, 1)';
-    if (dx < -threshold) {
-      goTo(current + 1);
-    } else if (dx > threshold) {
-      goTo(current - 1);
-    } else {
-      // snap back
-      track.style.transform = `translateX(${-current * 20}%)`;
-    }
-    startTimer();
-  }
-
-  // Safe cancel — snap back to current without needing clientX
-  function dragCancel() {
-    if (!dragging) return;
-    dragging = false;
-    lockedAxis = null;
-    banner.classList.remove('is-dragging');
-    track.style.transition = 'transform 350ms cubic-bezier(0.25, 0, 0, 1)';
-    track.style.transform = `translateX(${-current * 20}%)`;
-    startTimer();
-  }
-
-  // Touch events
-  banner.addEventListener('touchstart',  e => dragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-  banner.addEventListener('touchmove',   e => dragMove(e.touches[0].clientX, e.touches[0].clientY),  { passive: true });
-  banner.addEventListener('touchend',    e => dragEnd(e.changedTouches[0]?.clientX ?? dragStartX),    { passive: true });
-  banner.addEventListener('touchcancel', () => dragCancel(),                                           { passive: true });
-  // Reset if touch leaves app (e.g. tab switch on iOS)
-  document.addEventListener('visibilitychange', () => { if (document.hidden) dragCancel(); });
-
-  // Mouse events (desktop preview)
-  banner.addEventListener('mousedown',  e => { dragStart(e.clientX, e.clientY); e.preventDefault(); });
-  window.addEventListener('mousemove',  e => dragMove(e.clientX, e.clientY));
-  window.addEventListener('mouseup',    e => dragEnd(e.clientX));
 
   // Init: start at real slide 1, no animation
   setPos(1, false);
