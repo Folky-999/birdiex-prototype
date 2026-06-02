@@ -87,21 +87,25 @@ body {
 #page-feed { background: transparent; }
 /* Match & Profile: isolate from #app::before gradient */
 #page-match, #page-profile, #page-play { isolation: isolate; }
-/* Match scroll content above bg-illustration (z-index:0) */
-#page-match .scroll-body { z-index: 2; }
-/* Match page bg illustration — same position as feed */
+/* Match page layout */
+#page-match { position: relative; }
+/* Match scroll content above bg-illustration */
+#page-match .match-header { position: relative; z-index: 2; }
+#page-match .search-bar   { position: relative; z-index: 2; }
+#page-match .scroll-body  { position: relative; z-index: 2; }
+#page-match .fab          { z-index: 3; }
+/* Match bg illustration — fixed above nav bar, behind everything */
 #match-bg-illustration {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 390px;
+  bottom: 68px; /* sit just above nav bar */
+  left: 0;
+  width: 100%;
   height: auto;
   z-index: 0;
   pointer-events: none;
-  object-fit: cover;
-  object-position: bottom;
   display: block;
+  object-fit: cover;
+  object-position: bottom center;
 }
 
 /* ─── Scroll area ─── */
@@ -113,9 +117,10 @@ body {
   scrollbar-width: none;
   background: transparent;
 }
-/* Match & Profile scroll areas need white background */
-#page-match .scroll-body,
+/* Profile scroll area needs white background */
 #page-profile .scroll-body { background: #FFFFFF; }
+/* Match scroll-body transparent so bg-illustration shows through at bottom */
+#page-match .scroll-body { background: transparent; }
 .scroll-body::-webkit-scrollbar { display: none; }
 
 /* ─── Micro-interaction base — ALL buttons ─── */
