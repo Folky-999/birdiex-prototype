@@ -1060,7 +1060,8 @@ button:focus-visible {
 <body>
 <div id="app">
 
-
+  <!-- Golf course bg — must be first child so pages paint on top -->
+  <img id="bg-illustration" src="./assets/images/back-ground.png" alt="" aria-hidden="true">
 
   <!-- ══════════════════════════════════════════
        PAGE 1: FEED
@@ -1625,8 +1626,6 @@ button:focus-visible {
 
 
 
-  <!-- Golf course bg — visible on Feed & Match only -->
-  <img id="bg-illustration" src="./assets/images/back-ground.png" alt="" aria-hidden="true">
 
   <!-- ══════════════════════════════════════════
        BOTTOM NAV
@@ -1848,11 +1847,24 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
     startTimer();
   }
 
+  // Safe cancel — snap back to current without needing clientX
+  function dragCancel() {
+    if (!dragging) return;
+    dragging = false;
+    lockedAxis = null;
+    banner.classList.remove('is-dragging');
+    track.style.transition = 'transform 350ms cubic-bezier(0.25, 0, 0, 1)';
+    track.style.transform = `translateX(${-current * 20}%)`;
+    startTimer();
+  }
+
   // Touch events
   banner.addEventListener('touchstart',  e => dragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
   banner.addEventListener('touchmove',   e => dragMove(e.touches[0].clientX, e.touches[0].clientY),  { passive: true });
-  banner.addEventListener('touchend',    e => dragEnd(e.changedTouches[0].clientX),                   { passive: true });
-  banner.addEventListener('touchcancel', e => dragEnd(e.changedTouches[0].clientX),                   { passive: true });
+  banner.addEventListener('touchend',    e => dragEnd(e.changedTouches[0]?.clientX ?? dragStartX),    { passive: true });
+  banner.addEventListener('touchcancel', () => dragCancel(),                                           { passive: true });
+  // Reset if touch leaves app (e.g. tab switch on iOS)
+  document.addEventListener('visibilitychange', () => { if (document.hidden) dragCancel(); });
 
   // Mouse events (desktop preview)
   banner.addEventListener('mousedown',  e => { dragStart(e.clientX, e.clientY); e.preventDefault(); });
