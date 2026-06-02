@@ -63,7 +63,7 @@ body {
 .scroll-body {
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden; /* clips peeking banner slides at screen edge */
+  overflow-x: clip; /* clips peeking slides without blocking iOS scroll */
   padding-bottom: 88px;
   scrollbar-width: none;
   background: #FFFFFF;
@@ -1758,17 +1758,9 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
     dragging = true;
     lockedAxis = null;
     clearInterval(timer);
-    // Freeze track at its current visual position mid-transition
-    const computed = window.getComputedStyle(track).transform;
+    // Snap immediately to known current slide — avoids mid-transition parse bugs on iOS
     track.style.transition = 'none';
-    track.style.transform = computed;
-    // Sync current to nearest real slide index from frozen position
-    const matrix = new DOMMatrix(computed);
-    const trackW = track.offsetWidth;
-    const translatePx = matrix.m41;
-    const nearestIdx = Math.round(-translatePx / (trackW / (total + 2)));
-    current = Math.max(0, Math.min(total + 1, nearestIdx));
-    // Open peek overflow only when axis is confirmed horizontal (done in dragMove)
+    track.style.transform = `translateX(${-current * 20}%)`;
   }
 
   function dragMove(clientX, clientY) {
