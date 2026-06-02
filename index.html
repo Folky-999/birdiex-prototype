@@ -126,8 +126,10 @@ body {
 }
 
 /* ─── Pages ─── */
-.page { display: none; flex-direction: column; flex: 1; min-height: 0; background: transparent; }
+.page { display: none; flex-direction: column; flex: 1; min-height: 0; background: #FFFFFF; }
 .page.active { display: flex; }
+/* Feed page only: transparent so #app::before gradient shows through */
+#page-feed { background: transparent; }
 
 /* ─── Scroll area ─── */
 .scroll-body {
@@ -136,8 +138,11 @@ body {
   overflow-x: clip; /* clips peeking slides without blocking iOS scroll */
   padding-bottom: 88px;
   scrollbar-width: none;
-  background: transparent; /* let #app::before gradient show through */
+  background: transparent;
 }
+/* Match & Profile scroll areas need white background */
+#page-match .scroll-body,
+#page-profile .scroll-body { background: #FFFFFF; }
 .scroll-body::-webkit-scrollbar { display: none; }
 
 /* ─── Micro-interaction base — ALL buttons ─── */
