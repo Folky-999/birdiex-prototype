@@ -2,3 +2,11 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Environment variables — never commit these
+.env
+.env.local
+.env.*.local
+
+# Claude Code internal
+.claude/
