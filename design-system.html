@@ -1,0 +1,3045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BirdieX — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── BirdieX Tokens ─── */
+:root {
+  --bx-green: #3DD68C;
+  --bx-green-dark: #28B870;
+  --bx-green-light: #E8FAF2;
+  --bx-btn-gradient: linear-gradient(90deg, #3DD68C 0%, #2EC4C4 100%);
+  --bx-header-gradient: linear-gradient(160deg, #B8EDD6 0%, #D4F5E9 40%, #EAF8F2 100%);
+  --bx-bg: #F4F7F5;
+  --bx-card: #FFFFFF;
+  --bx-border: #E2EDE8;
+  --bx-text: #1A1A1A;
+  --bx-muted: #7A8A84;
+  --bx-radius-card: 18px;
+  --bx-radius-btn: 12px;
+  --bx-radius-avatar: 50%;
+  --bx-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --bx-transition: 200ms cubic-bezier(0.25, 0, 0, 1);
+  --bx-blue: #3B82F6;
+
+  /* Doc-specific */
+  --doc-sidebar: #111318;
+  --doc-sidebar-hover: rgba(255,255,255,0.07);
+  --doc-sidebar-active: rgba(61,214,140,0.15);
+  --doc-sidebar-active-text: #3DD68C;
+  --doc-sidebar-text: rgba(255,255,255,0.55);
+  --doc-sidebar-border: rgba(255,255,255,0.08);
+  --doc-content-bg: #F7F9F8;
+  --doc-section-bg: #FFFFFF;
+  --doc-code-bg: #F0F4F2;
+  --doc-code-text: #2C5F4A;
+  --doc-divider: #E8EDEB;
+}
+
+::selection { background: rgba(61,214,140,0.2); color: var(--bx-text); }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--doc-content-bg);
+  color: var(--bx-text);
+  line-height: 1.6;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: var(--doc-sidebar);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--doc-sidebar-border);
+  flex-shrink: 0;
+}
+.sidebar-logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.sidebar-logo-icon {
+  width: 32px; height: 32px;
+  background: var(--bx-btn-gradient);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-logo-icon svg { width: 18px; height: 18px; color: #fff; }
+.sidebar-logo-name { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.2px; }
+.sidebar-badge {
+  display: inline-block;
+  background: rgba(61,214,140,0.15);
+  color: var(--bx-green);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 2px;
+}
+
+.sidebar-section {
+  padding: 20px 24px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.sidebar-section:not(:first-of-type) {
+  border-top: 1px solid var(--doc-sidebar-border);
+  margin-top: 8px;
+  padding-top: 20px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--doc-sidebar-text);
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.25, 0, 0, 1);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin: 0 0 1px;
+}
+.sidebar-link svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.6; }
+.sidebar-link:hover {
+  background: var(--doc-sidebar-hover);
+  color: rgba(255,255,255,0.85);
+}
+.sidebar-link:hover svg { opacity: 0.85; }
+.sidebar-link.active {
+  background: var(--doc-sidebar-active);
+  color: var(--doc-sidebar-active-text);
+  border-left-color: var(--bx-green);
+  font-weight: 600;
+}
+.sidebar-link.active svg { opacity: 1; color: var(--bx-green); }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 24px;
+  border-top: 1px solid var(--doc-sidebar-border);
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+
+/* ─── Main content ─── */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  max-width: 1200px;
+  min-height: 100vh;
+}
+
+/* ─── Page header ─── */
+.page-hero {
+  background: var(--bx-header-gradient);
+  padding: 56px 64px 48px;
+  border-bottom: 1px solid var(--doc-divider);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(61,214,140,0.12);
+  pointer-events: none;
+}
+.page-hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bx-green-dark);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.page-hero h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--bx-text);
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+.page-hero-sub {
+  font-size: 16px;
+  color: var(--bx-muted);
+  max-width: 560px;
+  line-height: 1.6;
+}
+.page-hero-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+}
+.hero-meta-item {
+  font-size: 12px;
+  color: var(--bx-muted);
+  font-weight: 500;
+}
+.hero-meta-item strong { color: var(--bx-text); font-weight: 700; margin-right: 4px; }
+
+/* ─── Content layout ─── */
+.content {
+  padding: 48px 64px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+/* ─── Section ─── */
+.ds-section { scroll-margin-top: 24px; }
+
+.section-header {
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--doc-divider);
+}
+.section-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bx-green);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--bx-text);
+  letter-spacing: -0.3px;
+}
+.section-header p {
+  font-size: 14px;
+  color: var(--bx-muted);
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+/* ─── Token grids ─── */
+.token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.token-card {
+  background: #fff;
+  border: 1px solid var(--doc-divider);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow var(--bx-transition);
+}
+.token-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.token-swatch {
+  height: 64px;
+  width: 100%;
+}
+.token-info { padding: 12px; }
+.token-name { font-size: 12px; font-weight: 700; color: var(--bx-text); font-family: 'JetBrains Mono', monospace; }
+.token-value { font-size: 11px; color: var(--bx-muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+/* Gradient token */
+.token-gradient .token-swatch {
+  background: var(--bx-header-gradient);
+}
+.token-bg-gradient .token-swatch {
+  background: var(--bx-btn-gradient);
+}
+
+/* ─── Typography scale ─── */
+.type-scale { display: flex; flex-direction: column; gap: 0; background: #fff; border: 1px solid var(--doc-divider); border-radius: 12px; overflow: hidden; }
+.type-row {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--doc-divider);
+}
+.type-row:last-child { border-bottom: none; }
+.type-meta { width: 160px; flex-shrink: 0; }
+.type-label { font-size: 11px; font-weight: 700; color: var(--bx-green); text-transform: uppercase; letter-spacing: 0.8px; }
+.type-spec { font-size: 11px; color: var(--bx-muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+.type-preview { flex: 1; color: var(--bx-text); }
+
+/* ─── Spacing grid ─── */
+.spacing-grid { display: flex; flex-direction: column; gap: 0; background: #fff; border: 1px solid var(--doc-divider); border-radius: 12px; overflow: hidden; }
+.spacing-row {
+  display: flex; align-items: center; gap: 20px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--doc-divider);
+}
+.spacing-row:last-child { border-bottom: none; }
+.spacing-token { font-size: 12px; font-weight: 700; color: var(--bx-text); font-family: 'JetBrains Mono', monospace; width: 60px; flex-shrink: 0; }
+.spacing-value { font-size: 12px; color: var(--bx-muted); font-family: 'JetBrains Mono', monospace; width: 40px; flex-shrink: 0; }
+.spacing-bar-wrap { flex: 1; }
+.spacing-bar { height: 8px; background: var(--bx-green); border-radius: 4px; }
+.spacing-usage { font-size: 12px; color: var(--bx-muted); margin-left: auto; white-space: nowrap; }
+
+/* ─── Motion table ─── */
+.motion-table { background: #fff; border: 1px solid var(--doc-divider); border-radius: 12px; overflow: hidden; width: 100%; }
+.motion-table th { text-align: left; padding: 12px 20px; font-size: 11px; font-weight: 700; color: var(--bx-muted); text-transform: uppercase; letter-spacing: 0.8px; background: var(--doc-code-bg); border-bottom: 1px solid var(--doc-divider); }
+.motion-table td { padding: 14px 20px; font-size: 13px; border-bottom: 1px solid var(--doc-divider); vertical-align: middle; }
+.motion-table tr:last-child td { border-bottom: none; }
+.motion-table td:first-child { font-weight: 700; color: var(--bx-text); }
+.motion-table td:nth-child(2) { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--doc-code-text); }
+.motion-table td:nth-child(3) { color: var(--bx-muted); font-size: 12px; }
+
+/* ─── Component section ─── */
+.component-block {
+  background: #fff;
+  border: 1px solid var(--doc-divider);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.component-block:last-child { margin-bottom: 0; }
+
+.component-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--doc-divider);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.component-title-group {}
+.component-title { font-size: 17px; font-weight: 800; color: var(--bx-text); }
+.component-desc { font-size: 13px; color: var(--bx-muted); margin-top: 4px; line-height: 1.5; }
+.component-tokens { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.token-pill {
+  background: var(--doc-code-bg);
+  color: var(--doc-code-text);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── Preview frame ─── */
+.preview-panel {
+  display: flex;
+  gap: 0;
+}
+.preview-frame {
+  flex: 1;
+  background: var(--bx-bg);
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  border-right: 1px solid var(--doc-divider);
+  position: relative;
+}
+.preview-frame.mobile-frame {
+  background: #E8EDE8;
+}
+
+/* 390px mobile viewport simulation */
+.mobile-viewport {
+  width: 390px;
+  background: #fff;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.08);
+  position: relative;
+}
+
+/* ─── Guidelines panel ─── */
+.guidelines-panel {
+  width: 280px;
+  flex-shrink: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.guideline-group {}
+.guideline-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bx-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.guideline-label::before {
+  content: '';
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.guideline-label.do::before { background: #22C55E; }
+.guideline-label.dont::before { background: #EF4444; }
+.guideline-label.note::before { background: var(--bx-green); }
+
+.guideline-item {
+  font-size: 12.5px;
+  color: var(--bx-text);
+  line-height: 1.55;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--doc-divider);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.guideline-item:last-child { border-bottom: none; padding-bottom: 0; }
+.gi-icon { flex-shrink: 0; margin-top: 1px; font-size: 11px; }
+
+/* ─── Code snippet ─── */
+.code-block {
+  background: var(--doc-code-bg);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--doc-code-text);
+  line-height: 1.6;
+  overflow-x: auto;
+}
+.code-comment { color: #9CB8AD; }
+.code-prop { color: #2C6E5A; font-weight: 500; }
+.code-val { color: #0C5460; }
+
+/* ─── State row ─── */
+.state-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.state-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.state-label { font-size: 11px; color: var(--bx-muted); font-weight: 600; text-align: center; }
+
+/* ════════════════════════════════════
+   ACTUAL COMPONENTS (mirrored from app)
+════════════════════════════════════ */
+
+/* Buttons */
+button { font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:focus-visible { outline: 2px solid var(--bx-green); outline-offset: 2px; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bx-btn-gradient);
+  color: #fff; font-weight: 700; font-size: 14px;
+  border: none; border-radius: var(--bx-radius-btn);
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(61,214,140,0.35);
+  transition: all var(--bx-transition);
+}
+.btn-primary:hover { box-shadow: 0 6px 20px rgba(61,214,140,0.50); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.97); transition: transform 100ms cubic-bezier(0.25,0,0,1); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: transparent;
+  color: var(--bx-green); font-weight: 700; font-size: 14px;
+  border: 1.5px solid var(--bx-green); border-radius: var(--bx-radius-btn);
+  padding: 10px 20px;
+  transition: all var(--bx-transition);
+}
+.btn-ghost:hover { background: var(--bx-green-light); }
+.btn-ghost:active { transform: scale(0.97); transition: transform 100ms cubic-bezier(0.25,0,0,1); }
+
+.btn-disabled {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bx-border);
+  color: var(--bx-muted); font-weight: 700; font-size: 14px;
+  border: none; border-radius: var(--bx-radius-btn);
+  padding: 10px 20px;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Avatar */
+.avatar {
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4ecdc4, #3dd68c);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700;
+  flex-shrink: 0;
+}
+.avatar-32 { width: 32px; height: 32px; font-size: 12px; }
+.avatar-40 { width: 40px; height: 40px; font-size: 15px; }
+.avatar-48 { width: 48px; height: 48px; font-size: 18px; }
+
+/* Badge / Tag */
+.badge-green {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--bx-green-light);
+  color: var(--bx-green-dark);
+  font-size: 12px; font-weight: 700;
+  border-radius: 20px; padding: 4px 12px;
+}
+.badge-blue {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #EFF6FF;
+  color: var(--bx-blue);
+  font-size: 10px; font-weight: 800;
+  border-radius: 8px; padding: 4px 8px;
+  letter-spacing: 0.8px;
+}
+.badge-muted {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--bx-bg);
+  color: var(--bx-muted);
+  font-size: 12px; font-weight: 600;
+  border-radius: 20px; padding: 4px 12px;
+  border: 1px solid var(--bx-border);
+}
+
+/* Search bar */
+.search-bar-demo {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--bx-border);
+  display: flex; align-items: center;
+  padding: 12px 16px; gap: 8px;
+  box-shadow: var(--bx-shadow);
+  transition: box-shadow var(--bx-transition);
+  width: 100%;
+}
+.search-bar-demo.focused { box-shadow: 0 0 0 2px rgba(61,214,140,0.3); border-color: rgba(61,214,140,0.4); }
+.search-bar-demo svg { width: 18px; height: 18px; color: var(--bx-muted); flex-shrink: 0; }
+.search-bar-demo input {
+  flex: 1; border: none; outline: none;
+  font-family: inherit; font-size: 14px;
+  color: var(--bx-text); background: transparent;
+}
+.search-bar-demo input::placeholder { color: var(--bx-muted); opacity: 0.6; }
+
+/* Bottom nav */
+.bottom-nav-demo {
+  background: #fff;
+  border-top: 1px solid var(--bx-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 8px 8px 16px;
+  width: 100%;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+.nav-item-demo {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px;
+  background: none; border: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  transition: background var(--bx-transition);
+  cursor: pointer;
+}
+.nav-item-demo svg { width: 22px; height: 22px; color: var(--bx-muted); transition: color var(--bx-transition); }
+.nav-item-demo .nav-lbl { font-size: 10px; font-weight: 600; color: var(--bx-muted); transition: color var(--bx-transition); }
+.nav-item-demo.active { background: rgba(61,214,140,0.10); }
+.nav-item-demo.active svg { color: var(--bx-green); }
+.nav-item-demo.active .nav-lbl { color: var(--bx-green); }
+.nav-item-demo:hover:not(.active) { background: var(--bx-bg); }
+.nav-center-demo {
+  width: 48px; height: 48px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  border: none; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(61,214,140,0.35);
+  margin-bottom: 8px;
+  transition: all var(--bx-transition);
+  position: relative;
+}
+.nav-center-demo:hover { box-shadow: 0 6px 20px rgba(61,214,140,0.60); transform: translateY(-2px); }
+.nav-center-demo img { width: 36px; height: 36px; object-fit: contain; display: block; mix-blend-mode: multiply; }
+
+/* Tab toggle — exact match from .tab / .tab-bar in index.html */
+.tab-bar-demo {
+  display: flex;
+  padding: 4px;
+  gap: 0;
+}
+.tab-demo {
+  flex: 1; text-align: center;
+  padding: 6px 20px;
+  font-size: 15px; font-weight: 400;
+  color: #7A8A84; cursor: pointer;
+  border-radius: 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: background 200ms cubic-bezier(0.25, 0, 0, 1), color 200ms cubic-bezier(0.25, 0, 0, 1);
+  font-family: inherit;
+}
+.tab-demo.active {
+  background: rgba(255,255,255,0.6);
+  border-radius: 20px;
+  color: #3DD68C;
+  font-weight: 600;
+  border-bottom-color: #3DD68C;
+}
+.tab-demo:hover:not(.active) { color: var(--bx-text); }
+
+/* Match-header wrapper for tab context */
+.match-header-demo {
+  background: linear-gradient(180deg, #C8F0E2 0%, #D8F5EC 25%, #E8FAF4 50%, #F4FCFA 75%, #FFFFFF 100%);
+  padding: 12px 16px 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+}
+.match-header-demo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url('https://birdiex-prototype.vercel.app/assets/icons/x-water-mark.jpg') center / cover no-repeat;
+  transform: scaleX(-1);
+  z-index: 0; opacity: 0.35;
+}
+.match-header-demo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 75%, rgba(255,255,255,1) 100%);
+  z-index: 1; pointer-events: none;
+}
+.match-header-demo .match-title-demo,
+.match-header-demo .tab-bar-demo { position: relative; z-index: 3; }
+.match-title-demo { font-size: 22px; font-weight: 600; color: var(--bx-text); margin-bottom: 4px; padding-top: 0; }
+
+/* FAB */
+.fab-demo {
+  width: 48px; height: 48px;
+  background: var(--bx-btn-gradient);
+  border-radius: 50%;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(61,214,140,0.50);
+  cursor: pointer;
+  transition: all var(--bx-transition);
+}
+.fab-demo:hover { box-shadow: 0 6px 24px rgba(61,214,140,0.65); transform: translateY(-2px) scale(1.04); }
+.fab-demo:active { transform: scale(0.97); transition: transform 100ms cubic-bezier(0.25,0,0,1); }
+.fab-demo svg { width: 22px; height: 22px; color: #fff; }
+
+/* Post card */
+.post-card-demo {
+  background: var(--bx-card);
+  border-radius: var(--bx-radius-card);
+  border: 1px solid var(--bx-border);
+  box-shadow: var(--bx-shadow);
+  overflow: hidden;
+  width: 100%;
+}
+.post-header-demo {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+}
+.post-meta-demo { flex: 1; }
+.post-name-demo { font-weight: 700; font-size: 14px; color: var(--bx-text); }
+.follow-btn-demo {
+  background: none; border: none;
+  color: var(--bx-green); font-weight: 700; font-size: 14px;
+  margin-left: 8px; cursor: pointer;
+  transition: color var(--bx-transition);
+  font-family: inherit;
+}
+.follow-btn-demo:hover { color: var(--bx-green-dark); }
+.three-dot-demo {
+  width: 32px; height: 32px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: var(--bx-muted);
+  transition: all var(--bx-transition);
+}
+.three-dot-demo:hover { background: var(--bx-bg); color: var(--bx-text); }
+.score-img-demo {
+  height: 220px; position: relative; overflow: hidden;
+}
+.score-img-demo img { width: 100%; height: 100%; object-fit: cover; }
+.score-overlay-demo {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.80) 100%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 16px 14px;
+}
+.score-lbl-demo { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.65); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
+.score-num-demo { font-size: 36px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
+.score-sub-demo { font-size: 13px; color: rgba(255,255,255,0.7); }
+.post-footer-demo {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 16px;
+}
+.post-time-demo { font-size: 13px; color: var(--bx-muted); flex: 1; }
+.reaction-btn-demo {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--bx-muted); font-size: 14px; font-weight: 600;
+  border-radius: 8px; padding: 4px 8px;
+  transition: all var(--bx-transition); font-family: inherit;
+}
+.reaction-btn-demo:hover { color: var(--bx-green); background: var(--bx-green-light); }
+.reaction-btn-demo svg { width: 18px; height: 18px; }
+
+/* Match card */
+.match-card-demo {
+  background: var(--bx-card);
+  border-radius: var(--bx-radius-card);
+  border: 1px solid var(--bx-border);
+  box-shadow: var(--bx-shadow);
+  overflow: hidden;
+  width: 100%;
+  cursor: pointer;
+  transition: transform var(--bx-transition), box-shadow var(--bx-transition);
+}
+.match-card-demo:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.10); }
+.match-cover-demo {
+  height: 144px; position: relative; overflow: hidden;
+  border-radius: 14px 14px 0 0;
+}
+.match-body-demo { background: #fff; padding: 16px 16px; border-radius: 0 0 14px 14px; border: 1px solid var(--bx-border); border-top: none; }
+.match-cover-demo img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 300ms cubic-bezier(0.25,0,0,1);
+}
+.match-card-demo:hover .match-cover-demo img { transform: scale(1.02); }
+.match-cover-overlay-demo {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,0.70) 0%, transparent 100%);
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.avatar-xs-demo {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.85);
+  background: linear-gradient(135deg, #4ecdc4, var(--bx-green));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.host-name-demo { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+.booking-badge-demo {
+  position: absolute; top: 10px; left: 10px;
+  background: var(--bx-blue); color: #fff;
+  font-size: 10px; font-weight: 800;
+  border-radius: 8px; padding: 4px 8px; letter-spacing: 0.8px;
+}
+/* match-body-demo overrides defined above near .match-cover-demo */
+.match-name-demo { font-size: 15px; font-weight: 700; color: var(--bx-text); margin-bottom: 8px; line-height: 1.3; }
+.info-row-demo { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--bx-muted); margin-bottom: 6px; }
+.info-row-demo svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--bx-green); }
+.player-bar-demo { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.avatar-stack-demo { display: flex; }
+.avatar-stack-demo .avatar-xs-demo { margin-right: -8px; border-color: #fff; }
+.avatar-stack-demo .avatar-xs-demo:last-child { margin-right: 0; }
+.joined-badge-demo {
+  background: var(--bx-green-light); color: var(--bx-green-dark);
+  font-size: 12px; font-weight: 700; border-radius: 20px; padding: 4px 12px;
+  margin-left: 12px;
+}
+
+/* ════════════════════════════════════
+   NEW ADDITIONS
+════════════════════════════════════ */
+
+/* ─── Contrast ratio table ─── */
+.contrast-table { width: 100%; background: #fff; border: 1px solid var(--doc-divider); border-radius: 12px; overflow: hidden; border-collapse: collapse; }
+.contrast-table th { text-align: left; padding: 11px 20px; font-size: 11px; font-weight: 700; color: var(--bx-muted); text-transform: uppercase; letter-spacing: 0.8px; background: var(--doc-code-bg); border-bottom: 1px solid var(--doc-divider); }
+.contrast-table td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid var(--doc-divider); vertical-align: middle; }
+.contrast-table tr:last-child td { border-bottom: none; }
+.contrast-table .pair-preview { display: inline-flex; align-items: center; gap: 8px; }
+.contrast-table .pair-swatch { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--doc-divider); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.ratio-pass { display: inline-flex; align-items: center; gap: 4px; background: #F0FDF4; color: #16A34A; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+.ratio-warn { display: inline-flex; align-items: center; gap: 4px; background: #FFF7ED; color: #EA580C; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+.ratio-fail { display: inline-flex; align-items: center; gap: 4px; background: #FEF2F2; color: #DC2626; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+
+/* ─── Focus state demo ─── */
+.btn-focus-demo {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bx-btn-gradient);
+  color: #fff; font-weight: 700; font-size: 14px;
+  border: none; border-radius: var(--bx-radius-btn);
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(61,214,140,0.35);
+  outline: 2px solid var(--bx-green);
+  outline-offset: 2px;
+}
+
+/* ─── Form Input ─── */
+.input-field {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--bx-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  color: var(--bx-text);
+  outline: none;
+  transition: all var(--bx-transition);
+  line-height: 1.5;
+}
+.input-field::placeholder { color: var(--bx-muted); opacity: 0.6; }
+.input-field:focus { border-color: var(--bx-green); box-shadow: 0 0 0 3px rgba(61,214,140,0.15); }
+.input-field.input-error { border-color: #EF4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.10); }
+.input-field:disabled { background: var(--bx-bg); color: var(--bx-muted); cursor: not-allowed; opacity: 0.6; }
+.input-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.input-label { font-size: 13px; font-weight: 700; color: var(--bx-text); }
+.input-hint { font-size: 12px; color: var(--bx-muted); }
+.input-error-msg { font-size: 12px; color: #EF4444; display: flex; align-items: center; gap: 4px; }
+.input-with-icon { position: relative; }
+.input-with-icon .input-field { padding-left: 40px; }
+.input-with-icon svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--bx-muted); pointer-events: none; }
+.input-with-icon .input-field:focus ~ svg,
+.input-with-icon:focus-within svg { color: var(--bx-green); }
+
+/* ─── Skeleton ─── */
+@keyframes shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #E8EDE8 25%, #F0F5F1 50%, #E8EDE8 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+}
+.skeleton-card { background: #fff; border: 1px solid var(--bx-border); border-radius: var(--bx-radius-card); overflow: hidden; width: 100%; box-shadow: var(--bx-shadow); }
+.skeleton-img { height: 220px; }
+.skeleton-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+.skeleton-circle { border-radius: 50%; flex-shrink: 0; }
+.skeleton-line { height: 12px; }
+.skeleton-footer { padding: 14px 16px; display: flex; gap: 16px; }
+
+/* ─── Empty state ─── */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 48px 24px; text-align: center; width: 100%;
+}
+.empty-icon-wrap {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--bx-green-light);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.empty-icon-wrap svg { width: 32px; height: 32px; color: var(--bx-green); }
+.empty-title { font-size: 16px; font-weight: 800; color: var(--bx-text); margin-bottom: 6px; }
+.empty-desc { font-size: 13px; color: var(--bx-muted); line-height: 1.6; max-width: 240px; }
+.empty-action { margin-top: 20px; }
+
+/* ─── Icon grid ─── */
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+.icon-cell {
+  background: #fff;
+  border: 1px solid var(--doc-divider);
+  border-radius: 10px;
+  padding: 16px 8px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: default;
+  transition: all var(--bx-transition);
+}
+.icon-cell:hover { border-color: var(--bx-green); background: var(--bx-green-light); }
+.icon-cell:hover svg { color: var(--bx-green); }
+.icon-cell svg { width: 22px; height: 22px; color: var(--bx-muted); transition: color var(--bx-transition); }
+.icon-cell-label { font-size: 10px; font-weight: 600; color: var(--bx-muted); text-align: center; line-height: 1.3; }
+.icon-size-note {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  background: #fff; border: 1px solid var(--doc-divider);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
+}
+.icon-size-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--bx-muted); }
+.icon-size-item strong { color: var(--bx-text); }
+
+/* ─── Z-index table ─── */
+.zindex-table { width: 100%; background: #fff; border: 1px solid var(--doc-divider); border-radius: 12px; overflow: hidden; border-collapse: collapse; }
+.zindex-table th { text-align: left; padding: 11px 20px; font-size: 11px; font-weight: 700; color: var(--bx-muted); text-transform: uppercase; letter-spacing: 0.8px; background: var(--doc-code-bg); border-bottom: 1px solid var(--doc-divider); }
+.zindex-table td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid var(--doc-divider); vertical-align: middle; }
+.zindex-table tr:last-child td { border-bottom: none; }
+.zindex-table td:first-child { font-weight: 700; color: var(--bx-text); }
+.zindex-table td:nth-child(2) { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--doc-code-text); font-weight: 700; }
+.zindex-bar { height: 6px; border-radius: 3px; background: var(--bx-green); display: inline-block; margin-right: 8px; vertical-align: middle; }
+.zindex-tag { display: inline-block; font-size: 11px; font-weight: 600; background: var(--doc-code-bg); color: var(--doc-code-text); padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; margin: 2px; }
+
+/* ════════════════════════════════════
+   REDESIGN v2 — New CSS
+════════════════════════════════════ */
+
+/* ─── Scroll progress bar ─── */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 260px; right: 0;
+  height: 3px;
+  background: var(--bx-btn-gradient);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 200;
+  transition: transform 80ms linear;
+  pointer-events: none;
+}
+
+/* ─── Hero v2 ─── */
+.hero-v2 {
+  background: var(--bx-header-gradient);
+  padding: 64px 64px 56px;
+  border-bottom: 1px solid var(--doc-divider);
+  position: relative;
+  overflow: hidden;
+}
+.hero-v2::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://birdiex-prototype.vercel.app/assets/icons/x-water-mark.jpg') center right / 520px auto no-repeat;
+  opacity: 0.07;
+  pointer-events: none;
+}
+.hero-v2-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bx-green-dark);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  background: rgba(61,214,140,0.13);
+  padding: 5px 14px;
+  border-radius: 20px;
+  position: relative;
+}
+.hero-v2 h1 {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--bx-text);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+  position: relative;
+}
+.hero-v2-sub {
+  font-size: 17px;
+  color: var(--bx-muted);
+  max-width: 520px;
+  line-height: 1.65;
+  margin-bottom: 32px;
+  position: relative;
+}
+.hero-v2-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  position: relative;
+}
+.hero-stat-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(0,0,0,0.07);
+  border-radius: 20px;
+  padding: 8px 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.hero-stat-pill strong {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--bx-text);
+  line-height: 1;
+}
+.hero-stat-pill span {
+  font-size: 12px;
+  color: var(--bx-muted);
+  font-weight: 500;
+}
+.hero-audience-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  position: relative;
+}
+.audience-card {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: var(--bx-radius-card);
+  padding: 20px 22px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  transition: all var(--bx-transition);
+  cursor: default;
+}
+.audience-card:hover {
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+  transform: translateY(-2px);
+}
+.audience-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+.audience-card-icon.green { background: var(--bx-green-light); }
+.audience-card-icon.blue  { background: #EFF6FF; }
+.audience-card-icon.amber { background: #FFFBEB; }
+.audience-card-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--bx-text);
+  margin-bottom: 6px;
+}
+.audience-card-desc {
+  font-size: 12.5px;
+  color: var(--bx-muted);
+  line-height: 1.55;
+}
+.audience-card-items {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.audience-card-item {
+  font-size: 12px;
+  color: var(--bx-text);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  line-height: 1.4;
+}
+.audience-card-item::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--bx-green);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* ─── Component Gallery ─── */
+.gallery-section {
+  padding: 48px 64px;
+  background: #fff;
+  border-bottom: 1px solid var(--doc-divider);
+}
+.gallery-section-header {
+  margin-bottom: 28px;
+}
+.gallery-section-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--bx-text);
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+.gallery-section-header p {
+  font-size: 14px;
+  color: var(--bx-muted);
+  line-height: 1.6;
+}
+.comp-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.gallery-card {
+  background: var(--doc-section-bg);
+  border: 1px solid var(--doc-divider);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--bx-transition);
+  text-decoration: none;
+  display: block;
+}
+.gallery-card:hover {
+  border-color: var(--bx-green);
+  box-shadow: 0 4px 20px rgba(61,214,140,0.14);
+  transform: translateY(-2px);
+}
+.gallery-card:active { transform: scale(0.99); }
+.gallery-preview {
+  height: 110px;
+  background: var(--bx-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--doc-divider);
+  position: relative;
+  overflow: hidden;
+  gap: 8px;
+}
+.gallery-info {
+  padding: 12px 14px 14px;
+}
+.gallery-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bx-text);
+  margin-bottom: 3px;
+}
+.gallery-tagline {
+  font-size: 11.5px;
+  color: var(--bx-muted);
+  line-height: 1.4;
+}
+
+/* ─── Dev accordion ─── */
+.dev-details {
+  border-top: 1px solid var(--doc-divider);
+}
+.dev-details summary {
+  padding: 11px 28px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bx-muted);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--doc-code-bg);
+  transition: background var(--bx-transition), color var(--bx-transition);
+}
+.dev-details summary::-webkit-details-marker { display: none; }
+.dev-details summary .dev-chevron {
+  margin-left: auto;
+  font-size: 9px;
+  opacity: 0.5;
+  transition: transform var(--bx-transition);
+  display: inline-block;
+}
+.dev-details[open] summary .dev-chevron { transform: rotate(90deg); }
+.dev-details summary:hover {
+  color: var(--bx-text);
+  background: #E8EDE8;
+}
+.dev-details-body {
+  padding: 20px 28px 24px;
+  background: var(--doc-code-bg);
+  border-top: 1px solid var(--doc-divider);
+}
+
+/* ─── Guide rules (do/don't) ─── */
+.guide-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.guide-rule {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.guide-rule.do {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #166534;
+}
+.guide-rule.dont {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+}
+.guide-rule-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ─── Utility ─── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.gap-16 { gap: 16px; }
+.gap-24 { gap: 24px; }
+.mt-16 { margin-top: 16px; }
+.w-full { width: 100%; }
+
+/* ─── Subsection label ─── */
+.subsection-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bx-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  margin-top: 24px;
+}
+.subsection-label:first-child { margin-top: 0; }
+
+/* ─── Divider ─── */
+.divider { border: none; border-top: 1px solid var(--doc-divider); margin: 24px 0; }
+
+/* ─── Info chip ─── */
+.info-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--bx-green-light);
+  color: var(--bx-green-dark);
+  font-size: 11px; font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.info-chip svg { width: 12px; height: 12px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-mark">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="sidebar-logo-name">BirdieX</span>
+    </div>
+    <span class="sidebar-badge">Design System v1.0</span>
+  </div>
+
+  <a class="sidebar-link" href="#gallery" style="margin:12px 16px 4px;background:rgba(61,214,140,0.08);border-radius:10px;border-left:none;padding:10px 16px;font-size:12.5px;color:var(--bx-green);font-weight:700;letter-spacing:0.2px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Component Gallery
+  </a>
+  <div class="sidebar-section">Foundations</div>
+  <a class="sidebar-link active" href="#tokens-colors">
+    <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+    Colors
+  </a>
+  <a class="sidebar-link" href="#tokens-typography">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    Typography
+  </a>
+  <a class="sidebar-link" href="#tokens-spacing">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    Spacing
+  </a>
+  <a class="sidebar-link" href="#tokens-motion">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Motion
+  </a>
+
+  <div class="sidebar-section">Components</div>
+  <a class="sidebar-link" href="#comp-button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="3"/></svg>
+    Button
+  </a>
+  <a class="sidebar-link" href="#comp-avatar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Avatar
+  </a>
+  <a class="sidebar-link" href="#comp-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Badge / Tag
+  </a>
+  <a class="sidebar-link" href="#comp-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Search Bar
+  </a>
+  <a class="sidebar-link" href="#comp-nav">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Bottom Nav Bar
+  </a>
+  <a class="sidebar-link" href="#comp-tabs">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    Tab Toggle
+  </a>
+  <a class="sidebar-link" href="#comp-fab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    FAB
+  </a>
+  <a class="sidebar-link" href="#comp-post">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    Post Card
+  </a>
+  <a class="sidebar-link" href="#comp-match">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    Match Card
+  </a>
+  <a class="sidebar-link" href="#comp-input">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="6.01" y2="12" stroke-width="3"/></svg>
+    Form Input
+  </a>
+  <a class="sidebar-link" href="#comp-empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Empty States
+  </a>
+  <a class="sidebar-link" href="#comp-skeleton">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="4" rx="1"/><rect x="2" y="11" width="14" height="3" rx="1"/><rect x="2" y="17" width="18" height="3" rx="1"/></svg>
+    Skeleton / Loading
+  </a>
+
+  <div class="sidebar-section">Reference</div>
+  <a class="sidebar-link" href="#ref-icons">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    Icon Library
+  </a>
+  <a class="sidebar-link" href="#ref-zindex">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="14" height="14" rx="2"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M22 9v6"/><path d="M22 19v2"/></svg>
+    Z-index Scale
+  </a>
+
+  <div class="sidebar-footer">
+    BirdieX — Golf Social Platform<br>
+    Design tokens version 1.0
+  </div>
+</aside>
+
+
+<!-- ══════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════ -->
+<div id="scroll-progress"></div>
+<main class="main">
+
+  <!-- Hero v2 -->
+  <div class="hero-v2">
+    <div class="hero-v2-eyebrow">BirdieX · Design System v1.0</div>
+    <h1>ทุกหน้าจอที่ผู้ใช้เห็น<br>เริ่มต้นจากที่นี่</h1>
+    <p class="hero-v2-sub">Component library, design tokens, และ guidelines ครบในที่เดียว — สำหรับทุกคนในทีม ไม่ว่าจะเป็น Designer, Developer, หรือ Product</p>
+    <div class="hero-v2-stats">
+      <div class="hero-stat-pill"><strong>9</strong><span>Components</span></div>
+      <div class="hero-stat-pill"><strong>18</strong><span>Sections</span></div>
+      <div class="hero-stat-pill"><strong>51</strong><span>Tokens</span></div>
+      <div class="hero-stat-pill"><strong>WCAG AA</strong><span>Accessibility</span></div>
+      <div class="hero-stat-pill"><strong>390px</strong><span>Mobile-first</span></div>
+    </div>
+    <div class="hero-audience-cards">
+      <div class="audience-card">
+        <div class="audience-card-icon green">🎨</div>
+        <div class="audience-card-title">Designer</div>
+        <div class="audience-card-desc">Color tokens, spacing grid, typography scale, และ component specs พร้อมใช้ใน Figma</div>
+        <div class="audience-card-items">
+          <div class="audience-card-item">Design tokens ครบทุกค่า</div>
+          <div class="audience-card-item">Visual live preview</div>
+          <div class="audience-card-item">Do / Don't guidelines</div>
+        </div>
+      </div>
+      <div class="audience-card">
+        <div class="audience-card-icon blue">⚙️</div>
+        <div class="audience-card-title">Developer</div>
+        <div class="audience-card-desc">CSS class names, token references, และ code snippets พร้อม copy ทุก component</div>
+        <div class="audience-card-items">
+          <div class="audience-card-item">CSS variables + class names</div>
+          <div class="audience-card-item">State implementations</div>
+          <div class="audience-card-item">Motion & easing specs</div>
+        </div>
+      </div>
+      <div class="audience-card">
+        <div class="audience-card-icon amber">📋</div>
+        <div class="audience-card-title">Product / BA</div>
+        <div class="audience-card-desc">เข้าใจ component แต่ละตัวได้ทันที — ใช้ทำไม, ใช้ที่ไหน, ห้ามทำอะไร</div>
+        <div class="audience-card-items">
+          <div class="audience-card-item">ภาษาคน ไม่ใช่ภาษา code</div>
+          <div class="audience-card-item">Use case และ context</div>
+          <div class="audience-card-item">ข้อห้ามที่ควรรู้</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Component Gallery -->
+  <div class="gallery-section" id="gallery">
+    <div class="gallery-section-header">
+      <h2>Component Gallery</h2>
+      <p>คลิกที่ card เพื่อ scroll ไปดู spec และ guidelines ของแต่ละ component</p>
+    </div>
+    <div class="comp-gallery">
+
+      <!-- Button -->
+      <a class="gallery-card" href="#comp-button">
+        <div class="gallery-preview">
+          <button class="btn-primary" style="pointer-events:none;">Create Match ›</button>
+          <button class="btn-ghost" style="pointer-events:none;">View Profile</button>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Button</div>
+          <div class="gallery-tagline">Primary, Ghost, Disabled — ทุก action ในแอป</div>
+        </div>
+      </a>
+
+      <!-- Avatar -->
+      <a class="gallery-card" href="#comp-avatar">
+        <div class="gallery-preview" style="gap:16px;">
+          <div class="avatar avatar-32">K</div>
+          <div class="avatar avatar-40">K</div>
+          <div class="avatar avatar-48">K</div>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Avatar</div>
+          <div class="gallery-tagline">3 ขนาด — xs, md, lg + stack</div>
+        </div>
+      </a>
+
+      <!-- Badge -->
+      <a class="gallery-card" href="#comp-badge">
+        <div class="gallery-preview" style="gap:8px;flex-wrap:wrap;justify-content:center;">
+          <span class="badge-green">+2 Under</span>
+          <span class="badge-blue">OPEN</span>
+          <span class="badge-muted">18 Holes</span>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Badge / Tag</div>
+          <div class="gallery-tagline">Green, Blue, Muted — สถานะและ label</div>
+        </div>
+      </a>
+
+      <!-- Search Bar -->
+      <a class="gallery-card" href="#comp-search">
+        <div class="gallery-preview">
+          <div class="search-bar-demo" style="width:200px;pointer-events:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input placeholder="ค้นหา match..." readonly>
+          </div>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Search Bar</div>
+          <div class="gallery-tagline">Default + focus state พร้อม placeholder</div>
+        </div>
+      </a>
+
+      <!-- Bottom Nav -->
+      <a class="gallery-card" href="#comp-nav">
+        <div class="gallery-preview" style="padding:8px 0 0;">
+          <div class="bottom-nav-demo" style="width:260px;border-radius:0;box-shadow:none;border:1px solid var(--bx-border);border-radius:12px;overflow:hidden;pointer-events:none;">
+            <button class="nav-item-demo active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span class="nav-lbl">Home</span>
+            </button>
+            <button class="nav-center-demo">
+              <img src="https://birdiex-prototype.vercel.app/assets/icons/play-icon.png" alt="">
+            </button>
+            <button class="nav-item-demo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span class="nav-lbl">Profile</span>
+            </button>
+          </div>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Bottom Nav Bar</div>
+          <div class="gallery-tagline">5 items + center BirdieX button</div>
+        </div>
+      </a>
+
+      <!-- Tab Toggle -->
+      <a class="gallery-card" href="#comp-tabs">
+        <div class="gallery-preview" style="flex-direction:column;gap:0;padding:0;align-items:stretch;">
+          <div class="match-header-demo" style="border-radius:0;">
+            <div class="match-title-demo">Match</div>
+            <div class="tab-bar-demo">
+              <button class="tab-demo active">Upcoming</button>
+              <button class="tab-demo">History</button>
+              <button class="tab-demo">Stats</button>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Tab Toggle</div>
+          <div class="gallery-tagline">Section switcher บน green gradient header</div>
+        </div>
+      </a>
+
+      <!-- FAB -->
+      <a class="gallery-card" href="#comp-fab">
+        <div class="gallery-preview">
+          <button class="fab-demo" style="pointer-events:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">FAB</div>
+          <div class="gallery-tagline">Floating action button — add / quick action</div>
+        </div>
+      </a>
+
+      <!-- Post Card -->
+      <a class="gallery-card" href="#comp-post">
+        <div class="gallery-preview" style="padding:12px;align-items:flex-start;">
+          <div style="background:#fff;border-radius:12px;border:1px solid var(--bx-border);width:100%;overflow:hidden;pointer-events:none;">
+            <div class="post-header-demo" style="padding:10px 12px;">
+              <div class="avatar avatar-32">K</div>
+              <div class="post-meta-demo"><div class="post-name-demo" style="font-size:12px;">Karun F.</div></div>
+            </div>
+            <div style="height:48px;background:linear-gradient(180deg,#1a1a1a,#2a2a2a);display:flex;align-items:flex-end;padding:6px 10px;">
+              <span style="font-size:22px;font-weight:800;color:#fff;line-height:1;">-4</span>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Post Card</div>
+          <div class="gallery-tagline">Score share พร้อม photo overlay</div>
+        </div>
+      </a>
+
+      <!-- Match Card -->
+      <a class="gallery-card" href="#comp-match">
+        <div class="gallery-preview" style="padding:12px;align-items:flex-start;">
+          <div class="match-card-demo" style="pointer-events:none;max-width:220px;">
+            <div class="match-cover-demo" style="height:72px;">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#3DD68C,#2EC4C4);"></div>
+              <div class="match-cover-overlay-demo">
+                <div class="avatar-xs-demo">K</div>
+                <span class="host-name-demo" style="font-size:11px;">Karun Folk</span>
+              </div>
+              <div class="booking-badge-demo">OPEN</div>
+            </div>
+            <div class="match-body-demo" style="padding:8px 10px;">
+              <div class="match-name-demo" style="font-size:12px;margin-bottom:4px;">Morning Round</div>
+              <div class="info-row-demo" style="font-size:10px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Sat 7:00 AM
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-info">
+          <div class="gallery-name">Match Card</div>
+          <div class="gallery-tagline">Cover + info + player stack + status badge</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════════════════════════════════════
+         SECTION: COLORS
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="tokens-colors">
+      <div class="section-header">
+        <div class="section-eyebrow">Design Tokens</div>
+        <h2>Colors</h2>
+        <p>The complete BirdieX color palette. All values are defined as CSS custom properties on <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--doc-code-bg);padding:2px 6px;border-radius:4px">:root</code> and must be referenced by token name, never by raw hex.</p>
+      </div>
+
+      <div class="subsection-label">Brand Greens</div>
+      <div class="token-grid">
+        <div class="token-card">
+          <div class="token-swatch" style="background:#3DD68C;"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-green</div>
+            <div class="token-value">#3DD68C</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#28B870;"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-green-dark</div>
+            <div class="token-value">#28B870</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#E8FAF2; border-bottom: 1px solid var(--doc-divider);"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-green-light</div>
+            <div class="token-value">#E8FAF2</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch token-bg-gradient"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-btn-gradient</div>
+            <div class="token-value">90deg, #3DD68C → #2EC4C4</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch token-gradient"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-header-gradient</div>
+            <div class="token-value">160deg, #B8EDD6 → #EAF8F2</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection-label">Neutrals</div>
+      <div class="token-grid">
+        <div class="token-card">
+          <div class="token-swatch" style="background:#F4F7F5; border-bottom:1px solid var(--doc-divider);"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-bg</div>
+            <div class="token-value">#F4F7F5</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#FFFFFF; border-bottom:1px solid var(--doc-divider);"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-card</div>
+            <div class="token-value">#FFFFFF</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#E2EDE8;"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-border</div>
+            <div class="token-value">#E2EDE8</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#1A1A1A;"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-text</div>
+            <div class="token-value">#1A1A1A</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#7A8A84;"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-muted</div>
+            <div class="token-value">#7A8A84</div>
+          </div>
+        </div>
+        <div class="token-card">
+          <div class="token-swatch" style="background:#3B82F6;"></div>
+          <div class="token-info">
+            <div class="token-name">--bx-blue</div>
+            <div class="token-value">#3B82F6 · Booking</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrast Ratio Table -->
+      <div class="subsection-label" style="margin-top:32px;">Contrast Ratios — WCAG AA Verification</div>
+      <table class="contrast-table">
+        <tr>
+          <th>Combination</th>
+          <th>Preview</th>
+          <th>Ratio</th>
+          <th>Normal text (≥4.5)</th>
+          <th>Large/Bold text (≥3.0)</th>
+          <th>Note</th>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">--bx-text on --bx-card</code></td>
+          <td><div class="pair-swatch" style="background:#fff;color:#1A1A1A;border:1px solid #eee;">Aa</div></td>
+          <td><strong>16.1 : 1</strong></td>
+          <td><span class="ratio-pass">✓ AAA</span></td>
+          <td><span class="ratio-pass">✓ AAA</span></td>
+          <td style="color:var(--bx-muted);font-size:12px;">Body text on white card</td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">--bx-muted on --bx-card</code></td>
+          <td><div class="pair-swatch" style="background:#fff;color:#7A8A84;border:1px solid #eee;">Aa</div></td>
+          <td><strong>4.54 : 1</strong></td>
+          <td><span class="ratio-pass">✓ AA</span></td>
+          <td><span class="ratio-pass">✓ AA</span></td>
+          <td style="color:#EA580C;font-size:12px;">⚠️ Barely passes — ห้ามใช้ขนาดต่ำกว่า 14px</td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">--bx-green on --bx-card</code></td>
+          <td><div class="pair-swatch" style="background:#fff;color:#3DD68C;border:1px solid #eee;">Aa</div></td>
+          <td><strong>2.38 : 1</strong></td>
+          <td><span class="ratio-fail">✗ Fail</span></td>
+          <td><span class="ratio-fail">✗ Fail</span></td>
+          <td style="color:#DC2626;font-size:12px;">ห้ามใช้เป็น body text — ใช้ได้เฉพาะ icon, decoration, large bold</td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">white on --bx-green (button)</code></td>
+          <td><div class="pair-swatch" style="background:#3DD68C;color:#fff;">Aa</div></td>
+          <td><strong>2.38 : 1</strong></td>
+          <td><span class="ratio-fail">✗ Fail</span></td>
+          <td><span class="ratio-warn">~ Border</span></td>
+          <td style="color:#EA580C;font-size:12px;">⚠️ ปัญหาที่มีอยู่ในแอป — ปลอดภัยเพราะ bold 14px+ และมี shadow</td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">--bx-green-dark on --bx-green-light</code></td>
+          <td><div class="pair-swatch" style="background:#E8FAF2;color:#28B870;">Aa</div></td>
+          <td><strong>3.02 : 1</strong></td>
+          <td><span class="ratio-warn">~ Warn</span></td>
+          <td><span class="ratio-pass">✓ AA</span></td>
+          <td style="color:var(--bx-muted);font-size:12px;">Badge text — ใช้ font-weight: 700 เสมอ</td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">white on #1A1A1A (score overlay)</code></td>
+          <td><div class="pair-swatch" style="background:#1A1A1A;color:#fff;">Aa</div></td>
+          <td><strong>16.1 : 1</strong></td>
+          <td><span class="ratio-pass">✓ AAA</span></td>
+          <td><span class="ratio-pass">✓ AAA</span></td>
+          <td style="color:var(--bx-muted);font-size:12px;">Score overlay dark area</td>
+        </tr>
+      </table>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: TYPOGRAPHY
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="tokens-typography">
+      <div class="section-header">
+        <div class="section-eyebrow">Design Tokens</div>
+        <h2>Typography</h2>
+        <p>Plus Jakarta Sans exclusively. Five type levels. Minimum 14px on mobile. Body line-height 1.5–1.7.</p>
+      </div>
+
+      <div class="type-scale">
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-label">Display</div>
+            <div class="type-spec">36px / 800<br>lh: 1.2</div>
+          </div>
+          <div class="type-preview" style="font-size:36px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;">BirdieX</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-label">Heading</div>
+            <div class="type-spec">22px / 600<br>lh: 1.3</div>
+          </div>
+          <div class="type-preview" style="font-size:22px;font-weight:600;line-height:1.3;">Match</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-label">Subheading</div>
+            <div class="type-spec">16px / 800<br>lh: 1.4</div>
+          </div>
+          <div class="type-preview" style="font-size:16px;font-weight:800;line-height:1.4;">Welcome to BirdieX!</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-label">Body</div>
+            <div class="type-spec">14px / 400<br>lh: 1.6</div>
+          </div>
+          <div class="type-preview" style="font-size:14px;font-weight:400;color:var(--bx-muted);line-height:1.6;">Your swing deserves the spotlight. Let's create your first match!</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-label">Caption</div>
+            <div class="type-spec">11px / 700<br>lh: 1.5<br>UPPERCASE</div>
+          </div>
+          <div class="type-preview" style="font-size:11px;font-weight:700;color:var(--bx-muted);letter-spacing:1px;text-transform:uppercase;line-height:1.5;">RECENT ACTIVITY</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: SPACING
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="tokens-spacing">
+      <div class="section-header">
+        <div class="section-eyebrow">Design Tokens</div>
+        <h2>Spacing</h2>
+        <p>8px base grid. All spacing, padding, and margin values must be multiples of 8. Never use arbitrary values.</p>
+      </div>
+
+      <!-- Grid rule callout -->
+      <div style="background:var(--bx-green-light);border:1px solid rgba(61,214,140,0.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--bx-green-dark)" stroke-width="2" width="16" height="16" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div style="font-size:13px;color:var(--bx-text);line-height:1.6;"><strong>8px base grid</strong> — ใช้ได้เฉพาะค่าที่เป็น multiple ของ 8 (8, 16, 24, 32, 40px) &nbsp;|&nbsp; <strong>4px</strong> ใช้ได้เฉพาะ micro-gap ระหว่าง icon กับ label เท่านั้น &nbsp;|&nbsp; <strong>ห้ามใช้ค่า arbitrary</strong> เช่น 10px, 14px, 18px</div>
+      </div>
+
+      <div class="spacing-grid">
+        <div class="spacing-row" style="background:rgba(255,247,237,0.5);">
+          <div class="spacing-token" style="color:var(--bx-muted);">4px</div>
+          <div class="spacing-value" style="color:var(--bx-muted);">exception</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:4px;background:var(--bx-muted);opacity:0.4;"></div></div>
+          <div class="spacing-usage">Icon↔label gap เท่านั้น (nav-lbl, badge icon)</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-token">8px</div>
+          <div class="spacing-value">1×</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:8px;"></div></div>
+          <div class="spacing-usage">Inline elements, topbar icons gap</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-token">16px</div>
+          <div class="spacing-value">2×</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:16px;"></div></div>
+          <div class="spacing-usage">Card padding, page side margins</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-token">24px</div>
+          <div class="spacing-value">3×</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:24px;"></div></div>
+          <div class="spacing-usage">Section gaps, play CTA padding</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-token">32px</div>
+          <div class="spacing-value">4×</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:32px;"></div></div>
+          <div class="spacing-usage">Large vertical separation</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-token">40px</div>
+          <div class="spacing-value">5×</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:40px;"></div></div>
+          <div class="spacing-usage">Hero/header padding, scroll bottom</div>
+        </div>
+      </div>
+
+      <!-- Border radius reference -->
+      <div class="subsection-label" style="margin-top:32px;">Border Radius Visual Reference</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div style="background:#fff;border:1px solid var(--doc-divider);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:120px;">
+          <div style="width:64px;height:64px;background:var(--bx-green-light);border:2px solid var(--bx-green);border-radius:18px;"></div>
+          <div style="text-align:center;"><div style="font-size:12px;font-weight:700;color:var(--bx-text);">18px</div><div style="font-size:11px;color:var(--bx-muted);font-family:'JetBrains Mono',monospace;">--bx-radius-card</div><div style="font-size:11px;color:var(--bx-muted);">Card, Post, Match</div></div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--doc-divider);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:120px;">
+          <div style="width:64px;height:32px;background:var(--bx-btn-gradient);border-radius:12px;"></div>
+          <div style="text-align:center;"><div style="font-size:12px;font-weight:700;color:var(--bx-text);">12px</div><div style="font-size:11px;color:var(--bx-muted);font-family:'JetBrains Mono',monospace;">--bx-radius-btn</div><div style="font-size:11px;color:var(--bx-muted);">Button, Input</div></div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--doc-divider);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:120px;">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#4ecdc4,#3dd68c);border-radius:50%;"></div>
+          <div style="text-align:center;"><div style="font-size:12px;font-weight:700;color:var(--bx-text);">50%</div><div style="font-size:11px;color:var(--bx-muted);font-family:'JetBrains Mono',monospace;">--bx-radius-avatar</div><div style="font-size:11px;color:var(--bx-muted);">Avatar, FAB</div></div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--doc-divider);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:120px;">
+          <div style="width:64px;height:24px;background:var(--bx-green-light);border:1.5px solid var(--bx-green);border-radius:20px;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;font-weight:700;color:var(--bx-green-dark);">Joined</span></div>
+          <div style="text-align:center;"><div style="font-size:12px;font-weight:700;color:var(--bx-text);">20–50px</div><div style="font-size:11px;color:var(--bx-muted);">Pill shape</div><div style="font-size:11px;color:var(--bx-muted);">Badge, Tag, Tab</div></div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--doc-divider);border-radius:12px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:120px;">
+          <div style="width:64px;height:28px;background:var(--bx-blue);border-radius:8px;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;font-weight:800;color:#fff;letter-spacing:0.8px;">BOOKING</span></div>
+          <div style="text-align:center;"><div style="font-size:12px;font-weight:700;color:var(--bx-text);">8px</div><div style="font-size:11px;color:var(--bx-muted);">Status badge</div><div style="font-size:11px;color:var(--bx-muted);">Booking, Nav item</div></div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: MOTION
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="tokens-motion">
+      <div class="section-header">
+        <div class="section-eyebrow">Design Tokens</div>
+        <h2>Motion</h2>
+        <p>Never use <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--doc-code-bg);padding:2px 6px;border-radius:4px">linear</code> or <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--doc-code-bg);padding:2px 6px;border-radius:4px">ease</code>. All transitions must use one of these three curves. Always include a <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--doc-code-bg);padding:2px 6px;border-radius:4px">prefers-reduced-motion</code> override.</p>
+      </div>
+
+      <table class="motion-table" style="border-collapse:collapse;">
+        <tr>
+          <th>Token / Name</th>
+          <th>Curve</th>
+          <th>Timing</th>
+          <th>Use when</th>
+        </tr>
+        <tr>
+          <td>UI Response<br><span style="font-size:11px;color:var(--bx-muted);font-weight:400">--bx-transition</span></td>
+          <td>cubic-bezier(0.25, 0, 0, 1)</td>
+          <td>100–200ms</td>
+          <td>Buttons, hover states, color transitions</td>
+        </tr>
+        <tr>
+          <td>Delightful</td>
+          <td>cubic-bezier(0.34, 1.56, 0.64, 1)</td>
+          <td>200–350ms</td>
+          <td>Card entry, stagger animations, celebrations</td>
+        </tr>
+        <tr>
+          <td>Exit</td>
+          <td>cubic-bezier(0.4, 0, 1, 1)</td>
+          <td>150–250ms</td>
+          <td>Elements leaving the screen, fade-outs</td>
+        </tr>
+        <tr>
+          <td>Page transition</td>
+          <td>cubic-bezier(0.25, 0, 0, 1)</td>
+          <td>200–350ms</td>
+          <td>Page/route changes</td>
+        </tr>
+        <tr>
+          <td>Press / Active</td>
+          <td>cubic-bezier(0.25, 0, 0, 1)</td>
+          <td>100ms</td>
+          <td>scale(0.97) on button:active</td>
+        </tr>
+      </table>
+
+      <div class="mt-16">
+        <div class="code-block"><span class="code-comment">/* Stagger: 30–50ms per item, max 300ms total */</span>
+.feed-item:nth-child(1) { animation-delay: <span class="code-val">0ms</span>; }
+.feed-item:nth-child(2) { animation-delay: <span class="code-val">50ms</span>; }
+.feed-item:nth-child(3) { animation-delay: <span class="code-val">100ms</span>; }
+
+<span class="code-comment">/* Always required */</span>
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: <span class="code-val">0.01ms</span> !important; transition-duration: <span class="code-val">0.01ms</span> !important; }
+}</div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         COMPONENTS
+    ══════════════════════════════════════════ -->
+
+    <!-- ── BUTTON ── -->
+    <section class="ds-section" id="comp-button">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Button</h2>
+        <p>Three variants: Primary (gradient fill), Ghost (outlined), Disabled. All share the same border-radius and padding. Scale on active state is universal.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Button</div>
+            <div class="component-desc">Interactive trigger for primary actions, secondary confirmation, and unavailable states.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-btn-gradient</span>
+              <span class="token-pill">--bx-radius-btn (12px)</span>
+              <span class="token-pill">--bx-green</span>
+              <span class="token-pill">--bx-green-light</span>
+              <span class="token-pill">--bx-transition</span>
+            </div>
+          </div>
+          <span class="info-chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            WCAG AA
+          </span>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame">
+            <div class="state-row">
+              <div class="state-item">
+                <button class="btn-primary">Create Match ›</button>
+                <span class="state-label">Primary · Default</span>
+              </div>
+              <div class="state-item">
+                <button class="btn-primary" style="transform:translateY(-1px);box-shadow:0 6px 20px rgba(61,214,140,0.50);">Create Match ›</button>
+                <span class="state-label">Primary · Hover</span>
+              </div>
+              <div class="state-item">
+                <button class="btn-ghost">View Profile</button>
+                <span class="state-label">Ghost · Default</span>
+              </div>
+              <div class="state-item">
+                <button class="btn-ghost" style="background:var(--bx-green-light);">View Profile</button>
+                <span class="state-label">Ghost · Hover</span>
+              </div>
+              <div class="state-item">
+                <button class="btn-disabled" disabled>Unavailable</button>
+                <span class="state-label">Disabled</span>
+              </div>
+              <div class="state-item">
+                <button class="btn-focus-demo">Create Match ›</button>
+                <span class="state-label">Focus (keyboard)</span>
+              </div>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>ใช้ Primary สำหรับ action หลักของหน้า — ได้แค่ 1 ปุ่มต่อหน้าจอ</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>ใช้ Ghost สำหรับ action รอง เช่น View Profile ที่ไม่ใช่ action หลัก</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใส่ Primary button 2 ปุ่มในหน้าเดียวกัน — ผู้ใช้จะไม่รู้ต้องกดอะไร</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าเปลี่ยน border-radius — 12px คือ standard ของทุกปุ่มใน BirdieX</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + tokens<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-comment">/* Primary */</span>
+<span class="code-prop">.btn-primary</span> {
+  background: <span class="code-val">var(--bx-btn-gradient)</span>;
+  border-radius: <span class="code-val">var(--bx-radius-btn)</span>; <span class="code-comment">/* 12px */</span>
+  padding: <span class="code-val">10px 20px</span>;
+  box-shadow: <span class="code-val">0 4px 12px rgba(61,214,140,0.35)</span>;
+}
+<span class="code-prop">button:active</span> { transform: <span class="code-val">scale(0.97)</span>; transition: <span class="code-val">transform 100ms cubic-bezier(0.25,0,0,1)</span>; }</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── AVATAR ── -->
+    <section class="ds-section" id="comp-avatar">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Avatar</h2>
+        <p>Three sizes used throughout the app. All avatars are circular (50%). Initials use gradient backgrounds when no image is available.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Avatar</div>
+            <div class="component-desc">User representation in posts, match overlays, stacks, and navigation.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-radius-avatar (50%)</span>
+              <span class="token-pill">--bx-green</span>
+              <span class="token-pill">--bx-border</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame" style="gap:40px;">
+            <div class="state-item">
+              <div class="avatar avatar-32">K</div>
+              <span class="state-label">32px · xs</span>
+            </div>
+            <div class="state-item">
+              <div class="avatar avatar-40">K</div>
+              <span class="state-label">40px · md</span>
+            </div>
+            <div class="state-item">
+              <div class="avatar avatar-48">K</div>
+              <span class="state-label">48px · lg</span>
+            </div>
+            <div class="state-item">
+              <div class="flex" style="gap:0;">
+                <div class="avatar avatar-32" style="margin-right:-8px;border:2px solid #fff;">K</div>
+                <div class="avatar avatar-32" style="background:linear-gradient(135deg,#f093fb,#f5576c);margin-right:-8px;border:2px solid #fff;">A</div>
+                <div class="avatar avatar-32" style="background:linear-gradient(135deg,#4facfe,#00f2fe);border:2px solid #fff;">S</div>
+              </div>
+              <span class="state-label">Stack · −8px overlap</span>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>32px ใน post header, 28px ใน match overlay, 100px ใน profile hero</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Stack avatar — ใช้ margin-right: -8px + border: 2px solid #fff เสมอ</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใช้ square avatar — ต้องกลมเสมอ (border-radius: 50%)</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าแสดง initials เล็กกว่า 10px — อ่านไม่ออก</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + tokens<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-comment">/* Sizes */</span>
+<span class="code-prop">.avatar-32</span> { width: <span class="code-val">32px</span>; height: <span class="code-val">32px</span>; font-size: <span class="code-val">12px</span>; } <span class="code-comment">/* post, nav */</span>
+<span class="code-prop">.avatar-40</span> { width: <span class="code-val">40px</span>; height: <span class="code-val">40px</span>; font-size: <span class="code-val">15px</span>; }
+<span class="code-prop">.avatar-48</span> { width: <span class="code-val">48px</span>; height: <span class="code-val">48px</span>; font-size: <span class="code-val">18px</span>; }
+<span class="code-comment">/* Stack: overlap -8px, border: 2px solid #fff */</span></div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── BADGE / TAG ── -->
+    <section class="ds-section" id="comp-badge">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Badge / Tag</h2>
+        <p>Three semantic variants. Used for status labels, match indicators, and player counts.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Badge</div>
+            <div class="component-desc">Status indicators, counts, and contextual labels.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-green-light</span>
+              <span class="token-pill">--bx-green-dark</span>
+              <span class="token-pill">--bx-blue</span>
+              <span class="token-pill">--bx-bg</span>
+              <span class="token-pill">--bx-border</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame" style="gap:24px;flex-wrap:wrap;">
+            <div class="state-item">
+              <div class="badge-green">Joined 3 / 4 Players</div>
+              <span class="state-label">Green · Joined</span>
+            </div>
+            <div class="state-item">
+              <div class="badge-blue">BOOKING</div>
+              <span class="state-label">Blue · Booking</span>
+            </div>
+            <div class="state-item">
+              <div class="badge-muted">Coming soon</div>
+              <span class="state-label">Muted · Disabled</span>
+            </div>
+            <div class="state-item">
+              <div class="badge-green" style="font-size:10px;font-weight:800;letter-spacing:0.8px;padding:3px 10px;">LIVE</div>
+              <span class="state-label">Green · Live</span>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Green = ผลดี หรือ joined เช่น "Joined 3/4 Players"</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Blue = ต้องทำ action เช่น "BOOKING" หรือสถานะที่รอผู้ใช้</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าสร้าง badge สีใหม่ — ใช้ได้เฉพาะ 3 สีที่มีอยู่</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใส่ badge มากกว่า 2 อันบน element เดียวกัน</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + tokens<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-comment">/* Green — joined, positive */</span>
+<span class="code-prop">.badge-green</span> { background: <span class="code-val">var(--bx-green-light)</span>; color: <span class="code-val">var(--bx-green-dark)</span>; border-radius: <span class="code-val">20px</span>; padding: <span class="code-val">4px 12px</span>; }
+<span class="code-comment">/* Blue — booking, action */</span>
+<span class="code-prop">.badge-blue</span>  { background: <span class="code-val">#EFF6FF</span>; color: <span class="code-val">var(--bx-blue)</span>; border-radius: <span class="code-val">8px</span>; padding: <span class="code-val">4px 8px</span>; }</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── SEARCH BAR ── -->
+    <section class="ds-section" id="comp-search">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Search Bar</h2>
+        <p>Used on the Match page. Two states: Empty (placeholder visible) and Active (focus ring + typed value).</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Search Bar</div>
+            <div class="component-desc">Text field for filtering match listings. Shows a focus glow ring when active.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-border</span>
+              <span class="token-pill">--bx-shadow</span>
+              <span class="token-pill">--bx-green (focus ring)</span>
+              <span class="token-pill">--bx-muted (placeholder)</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame" style="flex-direction:column;gap:20px;min-width:0;">
+            <div style="width:390px;">
+              <div class="subsection-label" style="text-align:center;margin-bottom:8px;">Empty state</div>
+              <div class="search-bar-demo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input placeholder="Search by name" readonly>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18" style="color:var(--bx-muted)"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              </div>
+            </div>
+            <div style="width:390px;">
+              <div class="subsection-label" style="text-align:center;margin-bottom:8px;">Active / focused state</div>
+              <div class="search-bar-demo focused">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--bx-green)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input value="Toscana" readonly style="color:var(--bx-text);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18" style="color:var(--bx-muted)"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Focus ring — ใช้ box-shadow: 0 0 0 2px rgba(61,214,140,0.3) บน container</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>ใส่ filter icon ด้านขวาเสมอ — ช่วย affordance ว่า filter ได้</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใช้ outline ของ browser — ใช้ custom green ring แทน</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าวาง search bar ไว้ใน card — ต้องการ breathing room แนวนอน</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + tokens<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-prop">.search-bar-demo</span> { border-radius: <span class="code-val">14px</span>; border: <span class="code-val">1px solid var(--bx-border)</span>; }
+<span class="code-prop">.search-bar-demo:focus-within</span> {
+  box-shadow: <span class="code-val">0 0 0 2px rgba(61,214,140,0.3)</span>;
+  border-color: <span class="code-val">rgba(61,214,140,0.4)</span>;
+}</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── BOTTOM NAV ── -->
+    <section class="ds-section" id="comp-nav">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Bottom Nav Bar</h2>
+        <p>Fixed to the bottom of the 390px viewport. 5 items: 4 standard nav items + 1 elevated center Play button. One item active at a time.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Bottom Nav Bar</div>
+            <div class="component-desc">Primary navigation. Active state uses green tint. Disabled items show a tooltip on tap. The center X button is elevated with a shadow.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-green (active)</span>
+              <span class="token-pill">--bx-muted (inactive)</span>
+              <span class="token-pill">--bx-border</span>
+              <span class="token-pill">--bx-shadow</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame mobile-frame" style="align-items:flex-end;padding:0;">
+            <div class="mobile-viewport">
+              <div style="height:120px;background:linear-gradient(180deg,#C8F0E2,#FFFFFF);"></div>
+              <div class="bottom-nav-demo">
+                <!-- Feed — active -->
+                <button class="nav-item-demo active">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span class="nav-lbl">Feed</span>
+                </button>
+                <!-- Match — custom golf SVG from index.html -->
+                <button class="nav-item-demo">
+                  <svg viewBox="0 0 88 72" fill="currentColor" stroke="none" width="22" height="22">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M78.2043 52.4884L69.6887 62.2111C68.759 63.2736 67.1223 63.3283 66.1223 62.3283L63.5559 59.7619C63.1496 59.3557 62.4895 59.3557 62.0793 59.7619L62.0168 59.8244L56.5754 54.383C65.0168 49.8205 70.7514 40.891 70.7514 30.617C70.7514 27.1639 70.0795 23.8748 68.8959 20.8397L74.349 15.3866L74.388 15.4257C74.7943 15.8319 75.4544 15.8319 75.8646 15.4257L87.1926 4.09769C87.5989 3.69144 87.5989 3.03129 87.1926 2.62109L84.8762 0.304688C84.47 -0.101562 83.8098 -0.101562 83.3996 0.304688L72.0716 11.6327C71.6654 12.0389 71.6654 12.6991 72.0716 13.1093L72.1341 13.1718L67.513 17.7929C62.9622 9.35929 54.033 3.62089 43.763 3.62089C33.493 3.62089 24.564 9.35919 19.997 17.8009L15.3759 13.1798L15.4384 13.1173C15.8447 12.711 15.8447 12.0509 15.4384 11.6407L4.11043 0.312687C3.70418 -0.0935631 3.04403 -0.0935631 2.63383 0.312687L0.317427 2.62909C-0.0888231 3.03534 -0.0888231 3.69549 0.317427 4.10569L11.6454 15.4337C12.0517 15.8399 12.7118 15.8399 13.122 15.4337L13.1611 15.3946L18.6142 20.8477C17.4345 23.8829 16.7587 27.1719 16.7587 30.625C16.7587 40.895 22.4931 49.824 30.9387 54.391L25.4973 59.8324L25.4348 59.7699C25.0285 59.3637 24.3684 59.3637 23.9582 59.7699L21.3918 62.3363C20.3918 63.3363 18.7551 63.2816 17.8254 62.2191L9.30979 52.4964C6.99339 49.8558 2.66919 50.2308 1.02859 53.3363C0.44265 54.4496 0.0364001 55.7855 0.00129009 57.3558C-0.13933 64.3167 11.2553 71.0828 14.7863 71.3478C18.9191 71.6564 21.7941 69.508 27.7513 63.5509C28.1575 63.1446 28.1497 62.4884 27.7435 62.0821L27.7044 62.043L33.9739 55.7735C37.0091 56.9532 40.2981 57.629 43.7512 57.629C47.2043 57.629 50.4934 56.9571 53.5285 55.7735L59.798 62.043L59.759 62.0821C59.3527 62.4883 59.3488 63.1446 59.7511 63.5509C65.7081 69.5079 68.5831 71.6564 72.7161 71.3478C76.2473 71.0822 87.6421 64.3166 87.5011 57.3558C87.4699 55.7855 87.0636 54.4535 86.4738 53.3363C84.8449 50.223 80.5207 49.8478 78.2043 52.4884ZM43.7621 54.5079C30.5711 54.5079 19.8751 43.8129 19.8751 30.6209C19.8751 17.4289 30.5701 6.73392 43.7621 6.73392C56.9541 6.73392 67.6491 17.4289 67.6491 30.6209C67.6491 43.8129 56.9541 54.5079 43.7621 54.5079Z"/>
+                  </svg>
+                  <span class="nav-lbl">Match</span>
+                </button>
+                <!-- Center Play button — uses real play-icon.png asset -->
+                <button class="nav-center-demo" aria-label="BirdieX">
+                  <img src="https://birdiex-prototype.vercel.app/assets/brand/play-icon.png" alt="" aria-hidden="true">
+                </button>
+                <!-- Friends — disabled -->
+                <button class="nav-item-demo" style="opacity:0.4;cursor:not-allowed;" aria-disabled="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <span class="nav-lbl">Friends</span>
+                </button>
+                <!-- Profile — uses real Avatar.png asset -->
+                <button class="nav-item-demo">
+                  <div style="width:22px;height:22px;border-radius:50%;overflow:hidden;flex-shrink:0;">
+                    <img src="https://birdiex-prototype.vercel.app/assets/brand/Avatar.png" alt="Profile" style="width:44px;height:44px;object-fit:cover;object-position:center 10%;margin:-11px;display:block;">
+                  </div>
+                  <span class="nav-lbl">Profile</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Active item ได้แค่ 1 จาก 5 เสมอ — highlight ด้วย green tint background</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Disabled items (Friends) — tap แล้วแสดง "Coming soon" tooltip</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใส่ label ใต้ปุ่ม center BirdieX — มันยืน-เดี่ยวโดยไม่ต้องการ label</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่า navigate ไป disabled items — ต้อง intercept ใน JS ก่อน</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + z-index<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-comment">/* Fixed at bottom, above content */</span>
+<span class="code-prop">#bottom-nav</span> {
+  position: <span class="code-val">fixed</span>; bottom: <span class="code-val">0</span>; left: <span class="code-val">0</span>; right: <span class="code-val">0</span>;
+  z-index: <span class="code-val">99</span>;
+  background: <span class="code-val">#fff</span>; border-top: <span class="code-val">1px solid var(--bx-border)</span>;
+  padding: <span class="code-val">8px 8px 16px</span>; <span class="code-comment">/* 16px bottom = safe area */</span>
+}</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── TAB TOGGLE ── -->
+    <section class="ds-section" id="comp-tabs">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Tab Toggle</h2>
+        <p>Pill-style segmented control used on the Match page (Opening / Live). The active pill gets a white elevated background.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Tab Toggle</div>
+            <div class="component-desc">Switches between content views within a single page. Not for page-level navigation.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-green (active text)</span>
+              <span class="token-pill">--bx-muted (inactive)</span>
+              <span class="token-pill">--bx-border (track bg)</span>
+              <span class="token-pill">--bx-transition</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame mobile-frame" style="flex-direction:column;gap:0;padding:0;align-items:stretch;">
+            <!-- Simulate the match header context exactly -->
+            <div class="match-header-demo">
+              <div class="match-title-demo">Match</div>
+              <div class="tab-bar-demo">
+                <button class="tab-demo active" onclick="this.parentElement.querySelectorAll('.tab-demo').forEach(t=>t.classList.remove('active'));this.classList.add('active');">Opening</button>
+                <button class="tab-demo" onclick="this.parentElement.querySelectorAll('.tab-demo').forEach(t=>t.classList.remove('active'));this.classList.add('active');">Live</button>
+              </div>
+            </div>
+            <div style="padding:16px;background:#fff;">
+              <p style="font-size:12px;color:var(--bx-muted);text-align:center;">↑ Click tabs to toggle — rendered inside real gradient header</p>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>ใช้สำหรับ 2–3 views ของข้อมูลชุดเดียวกัน เช่น Opening / Live</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>ชื่อ tab สั้นสุด 1–2 คำ — ยิ่งสั้นยิ่งดี</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใช้แทน Bottom Nav — Tab Toggle เปลี่ยน view ไม่ใช่ page</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใช้เกิน 3 tabs — ถ้ามากกว่านั้นใช้ scroll list แทน</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + token<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-prop">.tab.active</span> {
+  background: <span class="code-val">rgba(255,255,255,0.6)</span>;
+  color: <span class="code-val">#3DD68C</span>; font-weight: <span class="code-val">600</span>;
+  border-bottom: <span class="code-val">2px solid #3DD68C</span>;
+  border-radius: <span class="code-val">20px</span>;
+}</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── FAB ── -->
+    <section class="ds-section" id="comp-fab">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>FAB — Floating Action Button</h2>
+        <p>Appears exclusively on the Match page. Fixed position at bottom-right. Triggers the "Create Match" flow.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">FAB</div>
+            <div class="component-desc">One-per-screen. Always a + icon. Positioned 96px from bottom, 16px from right edge within the 390px frame.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-btn-gradient</span>
+              <span class="token-pill">--bx-radius-avatar (50%)</span>
+              <span class="token-pill">--bx-transition</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame" style="gap:48px;">
+            <div class="state-item">
+              <button class="fab-demo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <span class="state-label">Default</span>
+            </div>
+            <div class="state-item">
+              <button class="fab-demo" style="box-shadow:0 6px 24px rgba(61,214,140,0.65);transform:translateY(-2px) scale(1.04);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <span class="state-label">Hover</span>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>ใช้เฉพาะหน้าที่ action หลักคือการสร้าง item ใหม่ (ตอนนี้คือหน้า Match เท่านั้น)</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Show/hide ด้วย JS ตาม page — ไม่ใช่ CSS display:none อย่างเดียว</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใช้ FAB บนหน้า Feed หรือ Profile — ของ Match Page เท่านั้น</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าเปลี่ยน icon จาก + โดยไม่ผ่าน design review</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS + positioning<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-comment">/* Fixed position within 390px frame */</span>
+<span class="code-prop">.fab</span> {
+  position: <span class="code-val">fixed</span>; bottom: <span class="code-val">96px</span>; right: <span class="code-val">16px</span>;
+  width: <span class="code-val">48px</span>; height: <span class="code-val">48px</span>; border-radius: <span class="code-val">50%</span>;
+  background: <span class="code-val">var(--bx-btn-gradient)</span>;
+  box-shadow: <span class="code-val">0 4px 18px rgba(61,214,140,0.50)</span>;
+  z-index: <span class="code-val">99</span>;
+}</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ── POST CARD ── -->
+    <section class="ds-section" id="comp-post">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Post Card</h2>
+        <p>The primary content unit in the Feed. Contains an author row, a score image with overlay data, and a reaction footer.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Post Card</div>
+            <div class="component-desc">Displays a user's golf round result. Score overlay includes: score value, stat columns (Par/Bogey/Double), and location + time metadata.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-card</span>
+              <span class="token-pill">--bx-radius-card (18px)</span>
+              <span class="token-pill">--bx-shadow</span>
+              <span class="token-pill">--bx-border</span>
+              <span class="token-pill">--bx-green (reactions hover)</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel" style="flex-direction:column;">
+          <div class="preview-frame mobile-frame" style="padding:24px;justify-content:center;">
+            <div style="width:390px;">
+              <div class="post-card-demo">
+                <div class="post-header-demo">
+                  <!-- Avatar: real photo, matches live app -->
+                  <div class="avatar avatar-40" style="background:none;overflow:hidden;padding:0;">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxnxLX_qzVnzjJoT85w40gAsUBDhS1sw_jrkCFoqifpQ&s" alt="Tiger Woods" style="width:64px;height:64px;object-fit:cover;object-position:center 15%;margin:-12px;display:block;">
+                  </div>
+                  <div class="post-meta-demo">
+                    <span class="post-name-demo">Tiger Woods</span>
+                    <button class="follow-btn-demo">Follow</button>
+                  </div>
+                  <button class="three-dot-demo" aria-label="More">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+                  </button>
+                </div>
+                <div class="score-img-demo">
+                  <img src="https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&q=80" alt="Golf course">
+                  <div class="score-overlay-demo">
+                    <div class="score-lbl-demo">SCORE</div>
+                    <div class="score-num-demo">102 <span style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.60)">(+30)</span></div>
+                    <div class="flex gap-16" style="margin-bottom:8px;border-left:1px solid rgba(255,255,255,0.2);">
+                      <div style="display:flex;flex-direction:column;align-items:center;padding:0 12px 0 12px;border-right:1px solid rgba(255,255,255,0.2);">
+                        <span style="font-size:16px;font-weight:800;color:#fff;">1</span>
+                        <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600;margin-top:2px;">PAR</span>
+                      </div>
+                      <div style="display:flex;flex-direction:column;align-items:center;padding:0 12px 0 0;border-right:1px solid rgba(255,255,255,0.2);">
+                        <span style="font-size:16px;font-weight:800;color:#fff;">6</span>
+                        <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600;margin-top:2px;">BOGEY</span>
+                      </div>
+                      <div style="display:flex;flex-direction:column;align-items:center;padding:0 12px 0 0;">
+                        <span style="font-size:16px;font-weight:800;color:#fff;">9</span>
+                        <span style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:600;margin-top:2px;">DOUBLE</span>
+                      </div>
+                    </div>
+                    <div style="font-size:12px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="13" height="13"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      Toscana Valley Country Club
+                    </div>
+                  </div>
+                </div>
+                <div class="post-footer-demo">
+                  <span class="post-time-demo">23 hrs ago</span>
+                  <button class="reaction-btn-demo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    4
+                  </button>
+                  <button class="reaction-btn-demo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-panel" style="border-top:1px solid var(--doc-divider);">
+            <div style="flex:1;"></div>
+            <div class="guidelines-panel" style="border-left:1px solid var(--doc-divider);">
+              <div class="guide-rules">
+                <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Header: Avatar 40px + ชื่อ + Follow + ⋮ เสมอ — ลำดับนี้ไม่เปลี่ยน</div>
+                <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Score overlay เริ่มที่ 60% จากด้านล่าง — ให้รูปเห็นได้ก่อน</div>
+                <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าตัด overlay ก่อน 60% — score จะลอยบนพื้นสว่างอ่านไม่ออก</div>
+                <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าใส่ border-top ระหว่าง section ในการ์ดเดียวกัน</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── MATCH CARD ── -->
+    <section class="ds-section" id="comp-match">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Match Card</h2>
+        <p>Used in the Match listing page. Contains a cover image with host info overlay, a detail body with info rows, and a player stack + joined badge.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Match Card</div>
+            <div class="component-desc">Browseable match listing item. The cover image subtly scales on hover. A BOOKING badge appears when pre-payment is required.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-card</span>
+              <span class="token-pill">--bx-radius-card (18px)</span>
+              <span class="token-pill">--bx-green (info icons, badge)</span>
+              <span class="token-pill">--bx-blue (booking badge)</span>
+              <span class="token-pill">--bx-border</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel" style="flex-direction:column;">
+          <div class="preview-frame mobile-frame" style="padding:24px;justify-content:center;">
+            <div style="width:390px;">
+              <div class="match-card-demo">
+                <div class="match-cover-demo">
+                  <img src="https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&q=80" alt="Golf course">
+                  <div class="booking-badge-demo">BOOKING</div>
+                  <div class="match-cover-overlay-demo">
+                    <div class="avatar-xs-demo">K</div>
+                    <span class="host-name-demo">Krit P.</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" width="14" height="14"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" width="14" height="14"><path d="M3 17l1-5 4 2 4-6 4 4 4-2 1 7H3z"/></svg>
+                  </div>
+                </div>
+                <div class="match-body-demo">
+                  <div class="match-name-demo">Morning Round at Toscana Valley</div>
+                  <div class="info-row-demo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Toscana Valley Country Club
+                  </div>
+                  <div class="info-row-demo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Sat 7 Jun 2026 · 07:00 AM
+                  </div>
+                  <div class="info-row-demo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    ฿1,800 – ฿2,500
+                  </div>
+                  <div class="info-row-demo" style="color:var(--bx-text);font-weight:600;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13" style="color:var(--bx-green)"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                    Avg. Score &nbsp;<span style="color:var(--bx-muted);font-weight:400">85–100</span>
+                  </div>
+                  <div class="player-bar-demo">
+                    <div class="avatar-stack-demo">
+                      <div class="avatar-xs-demo">K</div>
+                      <div class="avatar-xs-demo" style="background:linear-gradient(135deg,#f093fb,#f5576c)">A</div>
+                      <div class="avatar-xs-demo" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">S</div>
+                    </div>
+                    <div class="joined-badge-demo">Joined 3 / 4 Players</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-panel" style="border-top:1px solid var(--doc-divider);">
+            <div style="flex:1;"></div>
+            <div class="guidelines-panel" style="border-left:1px solid var(--doc-divider);">
+              <div class="guide-rules">
+                <div class="guide-rule do"><span class="guide-rule-icon">✅</span>แสดง 4 info rows เสมอ: สถานที่, วันที่, ราคา, Handicap</div>
+                <div class="guide-rule do"><span class="guide-rule-icon">✅</span>แสดง avatar stack แม้จะมีผู้เล่นเพียง 1 คน</div>
+                <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่า round มุมล่างของ cover image — body card ต่อชนกันพอดี</div>
+                <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>อย่าเปลี่ยนสี BOOKING badge — ต้องเป็น Blue (#3B82F6) เท่านั้น</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         SECTION: FORM INPUT
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="comp-input">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Form Input</h2>
+        <p>ใช้สำหรับ Create Match form — ชื่อ match, วันที่, ราคา, location. มี 5 states: default, focus, filled, error, disabled. ทุก input ต้องมี label และ hint/error message.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Text Input</div>
+            <div class="component-desc">Single-line text field. Used in Create Match, Search, and Profile Edit flows.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-border</span>
+              <span class="token-pill">--bx-green (focus ring)</span>
+              <span class="token-pill">--bx-radius-btn (12px)</span>
+              <span class="token-pill">--bx-muted (placeholder, hint)</span>
+              <span class="token-pill">--bx-transition</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame" style="flex-direction:column;gap:24px;align-items:stretch;max-width:420px;margin:0 auto;width:100%;">
+
+            <!-- Default -->
+            <div class="input-group">
+              <label class="input-label">Match Name</label>
+              <input class="input-field" type="text" placeholder="e.g. Morning Round at Toscana Valley" readonly>
+              <span class="input-hint">ชื่อ match จะแสดงบนหน้า Listing</span>
+            </div>
+
+            <!-- Focused (simulated) -->
+            <div class="input-group">
+              <label class="input-label">Location</label>
+              <div class="input-with-icon">
+                <input class="input-field" type="text" value="Toscana Valley Country Club" readonly style="border-color:var(--bx-green);box-shadow:0 0 0 3px rgba(61,214,140,0.15);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--bx-green)" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <span class="input-hint">Focus state — green ring 3px</span>
+            </div>
+
+            <!-- Error -->
+            <div class="input-group">
+              <label class="input-label">Price per Player</label>
+              <input class="input-field input-error" type="text" value="abc" readonly>
+              <span class="input-error-msg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                กรุณากรอกราคาเป็นตัวเลขเท่านั้น
+              </span>
+            </div>
+
+            <!-- Disabled -->
+            <div class="input-group">
+              <label class="input-label" style="color:var(--bx-muted);">Match ID</label>
+              <input class="input-field" type="text" value="BX-20260607-001" disabled>
+              <span class="input-hint">Auto-generated — ไม่สามารถแก้ไขได้</span>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guide-rules">
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Label อยู่บน input เสมอ — ห้ามใช้ placeholder แทน label</div>
+              <div class="guide-rule do"><span class="guide-rule-icon">✅</span>Error message แสดงหลัง blur หรือ submit — ไม่แสดงขณะพิมพ์</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>ห้ามใช้ border-radius อื่นนอกจาก 12px สำหรับ input</div>
+              <div class="guide-rule dont"><span class="guide-rule-icon">❌</span>ห้ามใช้สีแดงอื่นนอกจาก #EF4444 สำหรับ error state</div>
+            </div>
+          </div>
+        </div>
+        <details class="dev-details">
+          <summary>สำหรับ Developer — CSS states<span class="dev-chevron">▸</span></summary>
+          <div class="dev-details-body">
+            <div class="code-block"><span class="code-comment">/* States */</span>
+<span class="code-prop">.input-field</span>         { border: <span class="code-val">1.5px solid var(--bx-border)</span>; }
+<span class="code-prop">.input-field:focus</span>    { border-color: <span class="code-val">var(--bx-green)</span>; box-shadow: <span class="code-val">0 0 0 3px rgba(61,214,140,0.15)</span>; }
+<span class="code-prop">.input-field.error</span>    { border-color: <span class="code-val">#EF4444</span>; box-shadow: <span class="code-val">0 0 0 3px rgba(239,68,68,0.10)</span>; }
+<span class="code-prop">.input-field:disabled</span> { background: <span class="code-val">var(--bx-bg)</span>; cursor: <span class="code-val">not-allowed</span>; }</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: EMPTY STATES
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="comp-empty">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Empty States</h2>
+        <p>แสดงเมื่อ: ไม่มีข้อมูล / search ไม่เจอ / network error / feature ยังไม่พร้อม. ทุก empty state ต้องมี icon + title + description + action button (ถ้าเหมาะสม).</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Empty State Variants</div>
+            <div class="component-desc">3 variants: No content, No search results, Network error.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-green-light (icon bg)</span>
+              <span class="token-pill">--bx-green (icon color)</span>
+              <span class="token-pill">--bx-muted (description)</span>
+              <span class="token-pill">--bx-radius-avatar (icon wrap)</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame" style="gap:0;flex-wrap:wrap;padding:24px 16px;align-items:flex-start;background:#E8EDE8;">
+            <!-- No matches -->
+            <div style="width:280px;background:#fff;border-radius:var(--bx-radius-card);border:1px solid var(--bx-border);box-shadow:var(--bx-shadow);margin:8px;">
+              <div class="empty-state">
+                <div class="empty-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <div class="empty-title">ยังไม่มี Match</div>
+                <div class="empty-desc">ยังไม่มีแมตช์ในช่วงนี้ ลองสร้างแมตช์ใหม่หรือเปลี่ยน filter</div>
+                <div class="empty-action">
+                  <button class="btn-primary" style="font-size:13px;padding:9px 18px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    สร้าง Match ใหม่
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- No search results -->
+            <div style="width:280px;background:#fff;border-radius:var(--bx-radius-card);border:1px solid var(--bx-border);box-shadow:var(--bx-shadow);margin:8px;">
+              <div class="empty-state">
+                <div class="empty-icon-wrap">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <div class="empty-title">ไม่พบผลลัพธ์</div>
+                <div class="empty-desc">ไม่พบ match สำหรับ "Hua Hin Golf" ลองค้นหาด้วยคำอื่น</div>
+                <div class="empty-action">
+                  <button class="btn-ghost" style="font-size:13px;padding:8px 18px;">ล้างการค้นหา</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Network error -->
+            <div style="width:280px;background:#fff;border-radius:var(--bx-radius-card);border:1px solid var(--bx-border);box-shadow:var(--bx-shadow);margin:8px;">
+              <div class="empty-state">
+                <div class="empty-icon-wrap" style="background:#FEF2F2;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="empty-title">เกิดข้อผิดพลาด</div>
+                <div class="empty-desc">ไม่สามารถโหลดข้อมูลได้ กรุณาตรวจสอบการเชื่อมต่อ</div>
+                <div class="empty-action">
+                  <button class="btn-ghost" style="font-size:13px;padding:8px 18px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                    &nbsp;ลองอีกครั้ง
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guideline-group">
+              <div class="guideline-label note">Variants</div>
+              <div class="guideline-item"><span class="gi-icon">→</span><strong>No content</strong> — ยังไม่มีข้อมูล พร้อม CTA สร้างใหม่</div>
+              <div class="guideline-item"><span class="gi-icon">→</span><strong>No results</strong> — ค้นหาไม่เจอ พร้อม CTA ล้าง filter</div>
+              <div class="guideline-item"><span class="gi-icon">→</span><strong>Error</strong> — network/server error พร้อม retry</div>
+            </div>
+            <div class="guideline-group">
+              <div class="guideline-label do">Do</div>
+              <div class="guideline-item"><span class="gi-icon">✓</span>ทุก empty state ต้องบอก "ทำอะไรต่อได้" (actionable)</div>
+              <div class="guideline-item"><span class="gi-icon">✓</span>Error state ใช้สีแดงเฉพาะ icon เท่านั้น — ไม่ใช่ card ทั้งใบ</div>
+            </div>
+            <div class="guideline-group">
+              <div class="guideline-label dont">Don't</div>
+              <div class="guideline-item"><span class="gi-icon">✗</span>ห้ามใช้ "ไม่มีข้อมูล" เฉยๆ โดยไม่มี context</div>
+              <div class="guideline-item"><span class="gi-icon">✗</span>ห้ามใช้ emoji แทน SVG icon</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: SKELETON / LOADING
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="comp-skeleton">
+      <div class="section-header">
+        <div class="section-eyebrow">Components</div>
+        <h2>Skeleton / Loading State</h2>
+        <p>แสดงแทน Post Card และ Match Card ขณะ API กำลังโหลด. ใช้ shimmer animation 1.4s. ห้ามใช้ spinner หมุนแทน — skeleton บอก layout ให้ user เห็นก่อน ลด perceived wait time.</p>
+      </div>
+
+      <div class="component-block">
+        <div class="component-header">
+          <div class="component-title-group">
+            <div class="component-title">Skeleton Card</div>
+            <div class="component-desc">Placeholder สำหรับ Post Card และ Match Card. Shimmer ซ้ายไปขวา 1.4s loop.</div>
+            <div class="component-tokens">
+              <span class="token-pill">--bx-radius-card (18px)</span>
+              <span class="token-pill">--bx-border</span>
+              <span class="token-pill">--bx-shadow</span>
+              <span class="token-pill">shimmer keyframe</span>
+            </div>
+          </div>
+        </div>
+        <div class="preview-panel">
+          <div class="preview-frame mobile-frame" style="padding:24px;justify-content:center;gap:16px;flex-direction:column;align-items:center;">
+            <!-- Post Card Skeleton -->
+            <div style="width:358px;">
+              <div style="font-size:11px;font-weight:700;color:var(--bx-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;text-align:center;">Post Card Skeleton</div>
+              <div class="skeleton-card">
+                <div class="skeleton-header">
+                  <div class="skeleton skeleton-circle" style="width:40px;height:40px;flex-shrink:0;"></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+                    <div class="skeleton skeleton-line" style="width:120px;"></div>
+                    <div class="skeleton skeleton-line" style="width:80px;height:10px;"></div>
+                  </div>
+                </div>
+                <div class="skeleton skeleton-img"></div>
+                <div style="padding:12px 16px;display:flex;gap:12px;">
+                  <div class="skeleton skeleton-line" style="width:60px;height:10px;"></div>
+                  <div class="skeleton skeleton-line" style="width:40px;height:24px;border-radius:8px;margin-left:auto;"></div>
+                  <div class="skeleton skeleton-line" style="width:40px;height:24px;border-radius:8px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Match Card Skeleton -->
+            <div style="width:358px;">
+              <div style="font-size:11px;font-weight:700;color:var(--bx-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;text-align:center;">Match Card Skeleton</div>
+              <div class="skeleton-card">
+                <div class="skeleton skeleton-img" style="height:144px;border-radius:0;"></div>
+                <div style="padding:16px;display:flex;flex-direction:column;gap:10px;">
+                  <div class="skeleton skeleton-line" style="width:70%;height:14px;"></div>
+                  <div class="skeleton skeleton-line" style="width:90%;height:11px;"></div>
+                  <div class="skeleton skeleton-line" style="width:75%;height:11px;"></div>
+                  <div class="skeleton skeleton-line" style="width:55%;height:11px;"></div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                    <div class="skeleton skeleton-circle" style="width:28px;height:28px;"></div>
+                    <div class="skeleton skeleton-circle" style="width:28px;height:28px;margin-left:-8px;"></div>
+                    <div class="skeleton skeleton-line" style="width:100px;height:24px;border-radius:20px;margin-left:12px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="guidelines-panel">
+            <div class="guideline-group">
+              <div class="guideline-label do">Do</div>
+              <div class="guideline-item"><span class="gi-icon">✓</span>Skeleton ต้อง match layout ของ real component ทุก element</div>
+              <div class="guideline-item"><span class="gi-icon">✓</span>ใช้ shimmer เคลื่อนซ้าย→ขวา (ทิศทางการอ่าน)</div>
+              <div class="guideline-item"><span class="gi-icon">✓</span>ใส่ <code style="font-size:11px;font-family:'JetBrains Mono',monospace">prefers-reduced-motion</code> หยุด shimmer</div>
+            </div>
+            <div class="guideline-group">
+              <div class="guideline-label dont">Don't</div>
+              <div class="guideline-item"><span class="gi-icon">✗</span>ห้ามใช้ spinner แทน skeleton บน list view</div>
+              <div class="guideline-item"><span class="gi-icon">✗</span>ห้าม skeleton นานเกิน 3 วินาที — ถ้าเกินให้แสดง error state</div>
+              <div class="guideline-item"><span class="gi-icon">✗</span>ห้าม flash เมื่อ load เร็วเกิน 300ms — debounce skeleton</div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:20px 28px;background:var(--doc-code-bg);border-top:1px solid var(--doc-divider);">
+          <div class="code-block" style="background:transparent;padding:0;"><span class="code-comment">/* Shimmer animation */</span>
+@keyframes shimmer {
+  0%   { background-position: <span class="code-val">-600px 0</span>; }
+  100% { background-position: <span class="code-val">600px 0</span>; }
+}
+<span class="code-prop">.skeleton</span> {
+  background: <span class="code-val">linear-gradient(90deg, #E8EDE8 25%, #F0F5F1 50%, #E8EDE8 75%)</span>;
+  background-size: <span class="code-val">600px 100%</span>;
+  animation: <span class="code-val">shimmer 1.4s ease-in-out infinite</span>;
+}</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: ICON LIBRARY
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="ref-icons">
+      <div class="section-header">
+        <div class="section-eyebrow">Reference</div>
+        <h2>Icon Library</h2>
+        <p>SVG inline ทั้งหมด — ห้ามใช้ emoji หรือ icon font. 3 ขนาด standard: 20px (nav), 18px (inline/action), 24px (feature). Stroke width: 2–2.2px. Color ใช้ <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--doc-code-bg);padding:2px 6px;border-radius:4px">currentColor</code> เสมอ.</p>
+      </div>
+
+      <div class="icon-size-note">
+        <div class="icon-size-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:20px;height:20px;color:var(--bx-green);"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><div><strong>20px</strong> — Bottom Nav icons</div></div>
+        <div class="icon-size-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:18px;height:18px;color:var(--bx-green);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><div><strong>18px</strong> — Inline, action, reaction buttons</div></div>
+        <div class="icon-size-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px;color:var(--bx-green);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><strong>24px</strong> — Feature icons, section headers</div></div>
+        <div class="icon-size-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;color:var(--bx-muted);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><strong>13–14px</strong> — Info rows inside cards</div></div>
+      </div>
+
+      <div class="subsection-label">Navigation</div>
+      <div class="icon-grid">
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="icon-cell-label">Feed / Home</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 88 72" fill="currentColor" stroke="none" width="22" height="22"><path fill-rule="evenodd" clip-rule="evenodd" d="M78.2043 52.4884L69.6887 62.2111C68.759 63.2736 67.1223 63.3283 66.1223 62.3283L63.5559 59.7619C63.1496 59.3557 62.4895 59.3557 62.0793 59.7619L62.0168 59.8244L56.5754 54.383C65.0168 49.8205 70.7514 40.891 70.7514 30.617C70.7514 27.1639 70.0795 23.8748 68.8959 20.8397L74.349 15.3866L74.388 15.4257C74.7943 15.8319 75.4544 15.8319 75.8646 15.4257L87.1926 4.09769C87.5989 3.69144 87.5989 3.03129 87.1926 2.62109L84.8762 0.304688C84.47 -0.101562 83.8098 -0.101562 83.3996 0.304688L72.0716 11.6327C71.6654 12.0389 71.6654 12.6991 72.0716 13.1093L72.1341 13.1718L67.513 17.7929C62.9622 9.35929 54.033 3.62089 43.763 3.62089C33.493 3.62089 24.564 9.35919 19.997 17.8009L15.3759 13.1798L15.4384 13.1173C15.8447 12.711 15.8447 12.0509 15.4384 11.6407L4.11043 0.312687C3.70418 -0.0935631 3.04403 -0.0935631 2.63383 0.312687L0.317427 2.62909C-0.0888231 3.03534 -0.0888231 3.69549 0.317427 4.10569L11.6454 15.4337C12.0517 15.8399 12.7118 15.8399 13.122 15.4337L13.1611 15.3946L18.6142 20.8477C17.4345 23.8829 16.7587 27.1719 16.7587 30.625C16.7587 40.895 22.4931 49.824 30.9387 54.391L25.4973 59.8324L25.4348 59.7699C25.0285 59.3637 24.3684 59.3637 23.9582 59.7699L21.3918 62.3363C20.3918 63.3363 18.7551 63.2816 17.8254 62.2191L9.30979 52.4964C6.99339 49.8558 2.66919 50.2308 1.02859 53.3363C0.44265 54.4496 0.0364001 55.7855 0.00129009 57.3558C-0.13933 64.3167 11.2553 71.0828 14.7863 71.3478C18.9191 71.6564 21.7941 69.508 27.7513 63.5509C28.1575 63.1446 28.1497 62.4884 27.7435 62.0821L27.7044 62.043L33.9739 55.7735C37.0091 56.9532 40.2981 57.629 43.7512 57.629C47.2043 57.629 50.4934 56.9571 53.5285 55.7735L59.798 62.043L59.759 62.0821C59.3527 62.4883 59.3488 63.1446 59.7511 63.5509C65.7081 69.5079 68.5831 71.6564 72.7161 71.3478C76.2473 71.0822 87.6421 64.3166 87.5011 57.3558C87.4699 55.7855 87.0636 54.4535 86.4738 53.3363C84.8449 50.223 80.5207 49.8478 78.2043 52.4884ZM43.7621 54.5079C30.5711 54.5079 19.8751 43.8129 19.8751 30.6209C19.8751 17.4289 30.5701 6.73392 43.7621 6.73392C56.9541 6.73392 67.6491 17.4289 67.6491 30.6209C67.6491 43.8129 56.9541 54.5079 43.7621 54.5079Z"/></svg><span class="icon-cell-label">Match</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="icon-cell-label">Friends</span></div>
+        <div class="icon-cell">
+          <div style="width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;border:1.5px solid var(--bx-border);">
+            <img src="https://birdiex-prototype.vercel.app/assets/brand/Avatar.png" alt="Profile" style="width:52px;height:52px;object-fit:cover;object-position:center 10%;margin:-13px;display:block;">
+          </div>
+          <span class="icon-cell-label">Profile<br><span style="font-size:9px;color:var(--bx-green)">Avatar.png</span></span>
+        </div>
+      </div>
+
+      <div class="subsection-label">Actions</div>
+      <div class="icon-grid">
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="icon-cell-label">Add / FAB</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="icon-cell-label">Search</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="icon-cell-label">Notification</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="icon-cell-label">Message</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg><span class="icon-cell-label">More ⋮<br><span style="font-size:9px;color:var(--bx-green)">Post card</span></span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span class="icon-cell-label">More ⋯<br><span style="font-size:9px;color:var(--bx-green)">Profile page</span></span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span class="icon-cell-label">Share</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg><span class="icon-cell-label">History</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="icon-cell-label">Like / Heart</span></div>
+      </div>
+
+      <div class="subsection-label">Info / Data</div>
+      <div class="icon-grid">
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="icon-cell-label">Location</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="icon-cell-label">Date</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="icon-cell-label">Time</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span class="icon-cell-label">Stats / Chart</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span class="icon-cell-label">Info / Help</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 17l1-5 4 2 4-6 4 4 4-2 1 7H3z"/></svg><span class="icon-cell-label">Score / Golf</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg><span class="icon-cell-label">Filter</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77"/></svg><span class="icon-cell-label">Handicap</span></div>
+      </div>
+
+      <div class="subsection-label">Profile Tabs</div>
+      <div class="icon-grid">
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span class="icon-cell-label">Posts Grid<br><span style="font-size:9px;color:var(--bx-green)">Tab 1</span></span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="icon-cell-label">Photo<br><span style="font-size:9px;color:var(--bx-green)">Tab 2</span></span></div>
+        <div class="icon-cell"><svg viewBox="0 0 1200 1200" fill="currentColor" stroke="none" width="22" height="22"><path d="m472.69 202c-49.418 0-89.293 39.457-89.293 87.996 0 48.707 39.875 88.082 89.293 88.082 49.117 0 89.027-39.383 89.027-88.082-0.011719-48.539-39.91-87.996-89.027-87.996z"/><path d="m925.11 376.1c-3.3477-19.008-18.914-29.797-19.859-30.492l-524.19-345.61-48.699 70.547c-9.0703 13.906-5.1133 32.398 8.7969 41.449 13.836 9.1562 32.293 5.4375 41.363-8.4609l28.5-40.766 425.75 280.92-348.81 62.785c-24.695 4.1523-42.578 28.848-37.07 53.027l75.914 293.45-245.52 368.25c-14.676 25.141-5.7852 57.348 19.609 71.762 25.645 14.594 58.117 5.7109 72.891-19.418 0 0 256.06-385.08 257.01-387.51 0 0 13.211 53.438 13.211 53.699l-38.426 288.89c-4.8242 28.766 14.688 55.621 43.703 60.457 29.016 4.8242 56.57-14.426 61.395-43.008l39.746-297.17c1.2109-7.6094-0.34766-24.266-2.0742-31.609l-87.578-347.95 227.82-41.027c24.34-4.3047 40.828-27.789 36.508-52.23z"/></svg><span class="icon-cell-label">Golfer<br><span style="font-size:9px;color:var(--bx-green)">Tab 3</span></span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span class="icon-cell-label">Stats<br><span style="font-size:9px;color:var(--bx-green)">Tab 4</span></span></div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════
+         SECTION: Z-INDEX SCALE
+    ══════════════════════════════════════════ -->
+    <section class="ds-section" id="ref-zindex">
+      <div class="section-header">
+        <div class="section-eyebrow">Reference</div>
+        <h2>Z-index Scale</h2>
+        <p>Layer ordering สำหรับทุก element ใน BirdieX. Developer ต้องใช้ค่าจาก table นี้เท่านั้น ห้ามใช้ค่า arbitrary เช่น <code style="font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--doc-code-bg);padding:2px 6px;border-radius:4px">z-index: 9999</code>.</p>
+      </div>
+
+      <table class="zindex-table">
+        <tr>
+          <th>Layer Name</th>
+          <th>z-index</th>
+          <th>Used by</th>
+          <th>Notes</th>
+        </tr>
+        <tr>
+          <td>Base / Background</td>
+          <td>0</td>
+          <td>
+            <span class="zindex-tag">#bg-illustration</span>
+            <span class="zindex-tag">#match-bg-illustration</span>
+          </td>
+          <td style="font-size:12px;color:var(--bx-muted);">Golf course background image ที่อยู่ใต้ทุกอย่าง</td>
+        </tr>
+        <tr>
+          <td>Content</td>
+          <td>1</td>
+          <td>
+            <span class="zindex-tag">.scroll-body</span>
+            <span class="zindex-tag">.card</span>
+            <span class="zindex-tag">.feed-item</span>
+            <span class="zindex-tag">#app::before (gradient)</span>
+          </td>
+          <td style="font-size:12px;color:var(--bx-muted);">Content cards อยู่เหนือ background gradient</td>
+        </tr>
+        <tr>
+          <td>Elevated Content</td>
+          <td>2–3</td>
+          <td>
+            <span class="zindex-tag">.match-header elements</span>
+            <span class="zindex-tag">.tab-bar</span>
+            <span class="zindex-tag">.match-title</span>
+          </td>
+          <td style="font-size:12px;color:var(--bx-muted);">Content เหนือ header watermark overlay (z-index 1)</td>
+        </tr>
+        <tr>
+          <td>Sticky Tab Bar</td>
+          <td>50</td>
+          <td>
+            <span class="zindex-tag">.profile-tabs (sticky)</span>
+          </td>
+          <td style="font-size:12px;color:var(--bx-muted);">Tab bar ติด sticky ด้านบน scroll เนื้อหาโปรไฟล์</td>
+        </tr>
+        <tr>
+          <td>Fixed UI</td>
+          <td>99</td>
+          <td>
+            <span class="zindex-tag">#bottom-nav</span>
+            <span class="zindex-tag">.fab</span>
+          </td>
+          <td style="font-size:12px;color:var(--bx-muted);">Navigation และ FAB — ลอยอยู่เหนือ content เสมอ</td>
+        </tr>
+        <tr>
+          <td>Top Chrome</td>
+          <td>100</td>
+          <td>
+            <span class="zindex-tag">.header</span>
+            <span class="zindex-tag">.match-header (z-index: 100 via position)</span>
+          </td>
+          <td style="font-size:12px;color:var(--bx-muted);">Status bar + top nav — highest permanent layer</td>
+        </tr>
+        <tr style="background:#FFF7ED;">
+          <td style="color:#EA580C;">⚠️ Never use</td>
+          <td style="color:#EA580C;font-family:'JetBrains Mono',monospace;">999 / 9999</td>
+          <td>—</td>
+          <td style="font-size:12px;color:#EA580C;">ห้ามใช้เด็ดขาด — ใช้ค่าจากตารางข้างต้นเท่านั้น เพื่อป้องกัน stacking conflict</td>
+        </tr>
+      </table>
+
+      <div class="mt-16">
+        <div class="code-block"><span class="code-comment">/* Z-index reference — ใช้ค่าเหล่านี้เท่านั้น */</span>
+<span class="code-prop">--z-base</span>:    <span class="code-val">0</span>;   <span class="code-comment">/* bg-illustration */</span>
+<span class="code-prop">--z-content</span>: <span class="code-val">1</span>;   <span class="code-comment">/* cards, scroll-body */</span>
+<span class="code-prop">--z-elevated</span>:<span class="code-val">2-3</span>; <span class="code-comment">/* match header elements, tab-bar */</span>
+<span class="code-prop">--z-sticky</span>:  <span class="code-val">50</span>;  <span class="code-comment">/* profile sticky tabs */</span>
+<span class="code-prop">--z-fixed</span>:   <span class="code-val">99</span>;  <span class="code-comment">/* bottom-nav, fab */</span>
+<span class="code-prop">--z-chrome</span>:  <span class="code-val">100</span>; <span class="code-comment">/* top header */</span></div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ─── Scroll progress bar ───
+const progressBar = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+  progressBar.style.transform = `scaleX(${progress})`;
+}, { passive: true });
+
+// ─── Active sidebar link on scroll ───
+const sections = document.querySelectorAll('.ds-section[id]');
+const sidebarLinks = document.querySelectorAll('.sidebar-link[href]');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      sidebarLinks.forEach(link => link.classList.remove('active'));
+      const id = entry.target.id;
+      const activeLink = document.querySelector(`.sidebar-link[href="#${id}"]`);
+      if (activeLink) activeLink.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+// ─── Smooth sidebar scroll ───
+sidebarLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>

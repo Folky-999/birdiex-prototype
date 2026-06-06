@@ -18,7 +18,7 @@ Or run a local server (recommended for best experience):
 node serve.js
 ```
 
-Then open `http://localhost:3000`
+Then open `localhost:3000` in your browser.
 
 ---
 
