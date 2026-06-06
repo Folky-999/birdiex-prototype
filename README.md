@@ -6,19 +6,7 @@ A high-fidelity mobile UI prototype for BirdieX, a golf social app. Built as a s
 
 ## Getting Started
 
-No installation required. Open directly in a browser:
-
-```
-index.html
-```
-
-Or run a local server (recommended for best experience):
-
-```bash
-node serve.js
-```
-
-Then open `localhost:3000` in your browser.
+No installation required. Download the repo and open `index.html` directly in a browser.
 
 ---
 
