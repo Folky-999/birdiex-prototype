@@ -1514,7 +1514,7 @@ button:focus-visible { outline: 2px solid var(--bx-green); outline-offset: 2px; 
               </div>
             </div>
             <div class="flow-screen-label">Match</div>
-            <div class="flow-screen-desc">ดูคะแนน match ที่กำลังเล่น</div>
+            <div class="flow-screen-desc">เลือก/เข้าร่วม match ที่ถูกสร้างจาก Play</div>
           </div>
 
           <div class="flow-arrow">
@@ -1624,6 +1624,10 @@ button:focus-visible { outline: 2px solid var(--bx-green); outline-offset: 2px; 
           <div style="display:flex;gap:12px;align-items:flex-start;">
             <div style="width:6px;height:6px;border-radius:50%;background:var(--bx-green);margin-top:5px;flex-shrink:0;"></div>
             <div style="font-size:12px;color:var(--bx-muted);line-height:1.5;">Center FAB (Play button) เป็น primary action — ควรเด่นกว่า tab อื่นเสมอ</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#F59E0B;margin-top:5px;flex-shrink:0;"></div>
+            <div style="font-size:12px;color:var(--bx-muted);line-height:1.5;"><strong style="color:var(--bx-text);">Play → Match</strong> มี dependency — user สร้าง match ใน Play แล้วระบบพา user ไปที่ Match เพื่อเลือก/เข้าร่วม match นั้น ไม่ใช่แค่ tab navigation ธรรมดา</div>
           </div>
         </div>
       </div>
