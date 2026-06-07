@@ -1794,6 +1794,7 @@ function setMatchTab(tab) {
   document.getElementById('tab-live').classList.toggle('active', tab === 'live');
   document.getElementById('match-opening').style.display = tab === 'opening' ? 'block' : 'none';
   document.getElementById('match-live').style.display = tab === 'live' ? 'block' : 'none';
+  document.querySelector('#page-match .scroll-body').scrollTop = 0;
 }
 
 function setProfileTab(idx, el) {
