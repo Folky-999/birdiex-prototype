@@ -895,7 +895,22 @@ button:focus-visible {
   display: flex; align-items: center; justify-content: center;
 }
 .gender-badge svg { width: 12px; height: 12px; color: var(--bx-blue); }
-.edit-label { font-size: 11px; font-weight: 800; color: var(--bx-muted); letter-spacing: 0.8px; }
+.edit-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: transparent;
+  border: 1.5px solid var(--bx-border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px; font-weight: 700;
+  color: var(--bx-muted);
+  font-family: inherit;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: all var(--bx-transition);
+}
+.edit-btn svg { width: 12px; height: 12px; }
+@media (hover: hover) { .edit-btn:hover { border-color: var(--bx-green); color: var(--bx-green); } }
+.edit-btn:active { border-color: var(--bx-green); color: var(--bx-green); transform: scale(0.97); }
 
 .stats-row {
   display: flex;
@@ -958,6 +973,67 @@ button:focus-visible {
 .profile-tab.active svg { color: var(--bx-green); }
 @media (hover: hover) { .profile-tab:hover:not(.active) svg { color: var(--bx-text); } }
 .profile-tab:active:not(.active) svg { color: var(--bx-text); }
+
+/* ─── Profile tab content ─── */
+.profile-tab-content { display: none; }
+.profile-tab-content.active { display: block; }
+
+/* Post bar (Tab 0) */
+.profile-post-bar {
+  display: flex; align-items: center; gap: 12px;
+  margin: 16px 16px 0;
+  background: #fff;
+  border: 1px solid var(--bx-border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: var(--bx-shadow);
+}
+.post-bar-avatar {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+}
+.post-bar-placeholder { font-size: 14px; color: var(--bx-muted); }
+
+/* Empty state (Tab 0 & 1) */
+.profile-empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 52px 24px 60px;
+  gap: 8px;
+}
+.empty-icon-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: #F0F4F2;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+}
+.empty-icon-circle svg { width: 32px; height: 32px; color: #C5D0CB; }
+.profile-empty-state-text { font-size: 15px; font-weight: 600; color: var(--bx-muted); }
+.profile-empty-cta { font-size: 15px; font-weight: 700; color: var(--bx-green); margin-top: 2px; cursor: pointer; }
+
+/* Activity sections (Tab 2) */
+.profile-activity { padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+.activity-section-title {
+  font-size: 18px; font-weight: 700; color: var(--bx-text);
+  margin-bottom: 10px;
+}
+.activity-section-title .activity-count { font-weight: 400; color: var(--bx-muted); }
+.activity-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--bx-border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--bx-shadow);
+}
+.activity-card-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.activity-card-body { flex: 1; }
+.activity-card-title { font-size: 14px; font-weight: 700; color: var(--bx-text); margin-bottom: 4px; }
+.activity-card-sub { font-size: 12px; color: var(--bx-muted); line-height: 1.5; margin-bottom: 10px; }
+.activity-card-cta { font-size: 13px; font-weight: 700; color: var(--bx-green); cursor: pointer; }
 
 /* ─── Stats content ─── */
 .stats-section { padding: 16px; }
@@ -1537,7 +1613,10 @@ button:focus-visible {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="19 5 14 5 19 10"/></svg>
             </div>
           </div>
-          <span class="edit-label">EDIT</span>
+          <button class="edit-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Profile
+          </button>
         </div>
 
         <div class="stats-row">
@@ -1550,9 +1629,7 @@ button:focus-visible {
             <div class="stat-lbl">Followings</div>
           </div>
           <div class="stat-cell">
-            <div class="stat-num">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
+            <div class="stat-num">0</div>
             <div class="stat-lbl">Contact</div>
           </div>
         </div>
@@ -1563,7 +1640,7 @@ button:focus-visible {
             <div class="metric-lbl">Avg. Score</div>
           </div>
           <div class="metric-cell">
-            <div class="metric-val">—</div>
+            <div class="metric-val">0</div>
             <div class="metric-lbl">Total Match</div>
           </div>
           <div class="metric-cell">
@@ -1592,6 +1669,86 @@ button:focus-visible {
         </div>
       </div>
 
+      <!-- Tab 0: Grid/Posts -->
+      <div class="profile-tab-content" id="profile-content-0">
+        <div class="profile-post-bar">
+          <img src="./assets/brand/Avatar.png" class="post-bar-avatar" alt="avatar">
+          <span class="post-bar-placeholder">Post something...</span>
+        </div>
+        <div class="profile-empty-state">
+          <div class="empty-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="10" y1="11" x2="14" y2="11"/></svg>
+          </div>
+          <div class="profile-empty-state-text">No posts</div>
+          <div class="profile-empty-cta">Share your first post</div>
+        </div>
+      </div>
+
+      <!-- Tab 1: Photos -->
+      <div class="profile-tab-content" id="profile-content-1">
+        <div class="profile-empty-state">
+          <div class="empty-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <div class="profile-empty-state-text">No photos</div>
+          <div class="profile-empty-cta">Share your first post</div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Activity (Club / Membership / Bag) -->
+      <div class="profile-tab-content" id="profile-content-2">
+        <div class="profile-activity">
+
+          <!-- Club -->
+          <div>
+            <div class="activity-section-title">Club <span class="activity-count">(0)</span></div>
+            <div class="activity-card">
+              <div class="activity-card-icon" style="background:#E8F8F0;">
+                <img src="./assets/icons/Club-1.png" alt="Club" style="width:72px;height:72px;object-fit:cover;">
+              </div>
+              <div class="activity-card-body">
+                <div class="activity-card-title">Join BirdieX Clubs!</div>
+                <div class="activity-card-sub">Start a space where your community plays as one.</div>
+                <div class="activity-card-cta">Explore Clubs</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Membership -->
+          <div>
+            <div class="activity-section-title">Membership <span class="activity-count">(0)</span></div>
+            <div class="activity-card">
+              <div class="activity-card-icon" style="background:#FFF4E0;">
+                <img src="./assets/icons/Club-2.png" alt="Membership" style="width:72px;height:72px;object-fit:cover;">
+              </div>
+              <div class="activity-card-body">
+                <div class="activity-card-title">Unlock More with Membership</div>
+                <div class="activity-card-sub">Add your club memberships to your profile.</div>
+                <div class="activity-card-cta">Add New Membership</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bag -->
+          <div>
+            <div class="activity-section-title">Bag</div>
+            <div class="activity-card">
+              <div class="activity-card-icon" style="background:#E0F0FF;">
+                <img src="./assets/icons/Club-3.png" alt="Bag" style="width:72px;height:72px;object-fit:cover;">
+              </div>
+              <div class="activity-card-body">
+                <div class="activity-card-title">Unlock your Golf Bag</div>
+                <div class="activity-card-sub">This golf bag is empty.</div>
+                <div class="activity-card-cta">Add New Equipment</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab 3: Stats -->
+      <div class="profile-tab-content active" id="profile-content-3">
       <div class="stats-section">
         <div class="stats-section-header">
           <span class="stats-section-title">Stats</span>
@@ -1677,6 +1834,7 @@ button:focus-visible {
           <div class="other-stat-row">OVER TRIPLE BOGEY<span class="other-stat-val">0</span></div>
         </div>
       </div>
+      </div><!-- /profile-content-3 -->
     </div>
   </div><!-- /page-profile -->
 
@@ -1800,6 +1958,9 @@ function setMatchTab(tab) {
 function setProfileTab(idx, el) {
   document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
+  document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
+  const content = document.getElementById('profile-content-' + idx);
+  if (content) content.classList.add('active');
 }
 
 // Toggle btn logic
