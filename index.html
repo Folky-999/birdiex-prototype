@@ -776,8 +776,11 @@ button:focus-visible {
   flex-shrink: 0;
 }
 .host-name { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
-.host-icons { display: flex; gap: 4px; }
+.host-icons { display: flex; gap: 4px; align-items: center; }
 .host-icons svg { width: 14px; height: 14px; color: rgba(255,255,255,0.8); }
+.host-icons svg.icon-female { width: 20px; height: 20px; color: #F9A8D4; stroke: #F9A8D4; }
+.host-icons svg.icon-male { width: 20px; height: 20px; color: #93C5FD; stroke: #93C5FD; }
+.host-icons svg.icon-cart { width: 20px; height: 20px; color: rgba(255,255,255,0.9); stroke: rgba(255,255,255,0.9); }
 .booking-badge {
   position: absolute; top: 10px; left: 10px;
   background: var(--bx-blue); color: #fff;
@@ -1420,12 +1423,9 @@ button:focus-visible {
               </div>
               <span class="host-name">Ohmatcc</span>
               <div class="host-icons">
-                <!-- Female icon -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="8" r="4"/><line x1="12" y1="12" x2="12" y2="20"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
-                <!-- Male icon -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="19 5 14 5 19 10"/></svg>
-                <!-- Cart icon -->
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <svg class="icon-female" viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><line x1="12" y1="12" x2="12" y2="20"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                <svg class="icon-male" viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="19 5 14 5 19 10"/></svg>
+                <svg class="icon-cart" viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
               </div>
             </div>
           </div>
@@ -1457,8 +1457,8 @@ button:focus-visible {
               <div class="avatar-xs" style="background:linear-gradient(135deg,#667eea,#764ba2)">N</div>
               <span class="host-name">Nantawit Khamch</span>
               <div class="host-icons">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="8" r="4"/><line x1="12" y1="12" x2="12" y2="20"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="19 5 14 5 19 10"/></svg>
+                <svg class="icon-female" viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><line x1="12" y1="12" x2="12" y2="20"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                <svg class="icon-male" viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="10" cy="14" r="5"/><line x1="19" y1="5" x2="14.14" y2="9.86"/><polyline points="19 5 14 5 19 10"/></svg>
               </div>
             </div>
           </div>
